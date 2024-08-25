@@ -84,170 +84,170 @@ enum PermissionsPolicyFeature {
   kSolana = 68,
 
   // Web Authentication (https://w3c.github.io/webauthn/#sctn-iframe-guidance)
-  kPublicKeyCredentialsGet = 67,
+  kPublicKeyCredentialsGet = 69,
 
   //Additional Client Hint
-  kClientHintUAMobile = 69,
+  kClientHintUAMobile = 71,
 
   // Storage Access API
-  kStorageAccessAPI = 70,
+  kStorageAccessAPI = 72,
 
   // Client Hint for the full browser version.
-  kClientHintUAFullVersion = 71,
+  kClientHintUAFullVersion = 73,
 
   // Trust Token API redemption and request signing operations
-  kTrustTokenRedemption = 72,
+  kTrustTokenRedemption = 74,
 
   // Controls use of Attribution Reporting API
-  kAttributionReporting = 73,
+  kAttributionReporting = 75,
 
   // Client Hint for UA platform version.
-  kClientHintUAPlatformVersion = 74,
+  kClientHintUAPlatformVersion = 76,
 
   // cross-origin isolated permission
-  kCrossOriginIsolated = 75,
+  kCrossOriginIsolated = 77,
 
   // Controls use of Clipboard API Read.
-  kClipboardRead = 76,
+  kClipboardRead = 78,
 
   // Controls use of Clipboard API Write.
-  kClipboardWrite = 77,
+  kClipboardWrite = 79,
 
   // Controls use of Web Share API.
-  kWebShare = 78,
+  kWebShare = 80,
 
   // Controls access to gamepads interface
-  kGamepad = 79,
+  kGamepad = 81,
 
   // Controls use of WebOTP API.
-  kOTPCredentials = 80,
+  kOTPCredentials = 82,
 
   // Controls access to screen capture via getDisplayMedia().
-  kDisplayCapture = 81,
+  kDisplayCapture = 83,
 
   // [Deprecated]
-  // kInterestCohort = 82,
+  // kInterestCohort = 84,
 
   // Controls whether Autofill may fill fields in that frame when triggered on
   // a field with the main frame's origin.
-  kSharedAutofill = 83,
+  kSharedAutofill = 85,
 
   // Controls access to Direct Sockets.
-  kDirectSockets = 84,
+  kDirectSockets = 86,
 
   // Client Hint for the preferred color scheme.
-  kClientHintPrefersColorScheme = 85,
+  kClientHintPrefersColorScheme = 87,
 
   // Controls use of Window Management API.
-  kWindowManagement = 86,
+  kWindowManagement = 88,
 
-  kClientHintUABitness = 87,
+  kClientHintUABitness = 88,
 
-  // kClientHintUAReduced = 88, Removed in M116.
+  // kClientHintUAReduced = 90, Removed in M116.
 
   // Client Hint for viewport height.
-  kClientHintViewportHeight = 89,
+  kClientHintViewportHeight = 91,
 
   // Controls access to the Keyboard API.
   // https://wicg.github.io/keyboard-map/
-  kKeyboardMap = 90,
+  kKeyboardMap = 92,
 
   // Controls FLEDGE's runAdAuction API.
   //
   // See https://github.com/WICG/turtledove/blob/main/FLEDGE.md#21-initiating-an-on-device-auction
   // for the API.
-  kRunAdAuction = 91,
+  kRunAdAuction = 93,
 
   // Controls FLEDGE's joinAdInterestGroup and updateAdInterestGroups APIs.
   //
   // See https://github.com/WICG/turtledove/blob/main/FLEDGE.md#11-joining-interest-groups
   // for the API.
-  kJoinAdInterestGroup = 92,
+  kJoinAdInterestGroup = 94,
 
   // Client Hint for the full version for each brand.
-  kClientHintUAFullVersionList = 93,
+  kClientHintUAFullVersionList = 95,
 
-  // kClientHintUAFull = 94, Removed in M116.
+  // kClientHintUAFull = 96, Removed in M116.
 
   // Client Hint for Sec-CH-UA-WoW64.
-  kClientHintUAWoW64 = 95,
+  kClientHintUAWoW64 = 97,
 
   // "browsing-topics" permissions policy that controls the use of Topics API.
   // https://github.com/jkarlin/topics
-  kBrowsingTopics = 97,
+  kBrowsingTopics = 99,
 
   // "interest-cohort" permissions policy that controls the use of Topics API.
   // https://github.com/jkarlin/topics
-  kBrowsingTopicsBackwardCompatible = 98,
+  kBrowsingTopicsBackwardCompatible = 100,
 
   // Client Hint for Save-Data.
-  kClientHintSaveData = 99,
+  kClientHintSaveData = 101,
 
   // Controls access to local fonts.
   // https://wicg.github.io/local-font-access/#permissions-policy
-  kLocalFonts = 100,
+  kLocalFonts = 102,
 
   // Controls access to Bluetooth API.
-  kBluetooth = 101,
+  kBluetooth = 103,
 
   // Controls use of FedCM API.
-  kIdentityCredentialsGet = 102,
+  kIdentityCredentialsGet = 104,
 
   // "shared-storage" permissions policy that controls the use of Shared Storage
   // API.
-  kSharedStorage = 103,
+  kSharedStorage = 105,
 
   // Controls use of unload handlers.
-  kUnload = 104,
+  kUnload = 106,
 
   // Client Hint for the preferred reduced motion.
-  kClientHintPrefersReducedMotion = 105,
+  kClientHintPrefersReducedMotion = 107,
 
   // Controls use of Compute Pressure API.
   // https://w3c.github.io/compute-pressure/#policy-control
-  kComputePressure = 106,
+  kComputePressure = 108,
 
   // Web Smart Card API
-  kSmartCard = 107,
+  kSmartCard = 109,
 
   // "shared-storage-select-url" permissions policy that controls the use of
   // sharedStorage.selectURL().
-  kSharedStorageSelectUrl = 108,
+  kSharedStorageSelectUrl = 110,
 
   // "private-aggregation" permissions policy that controls the use of
   // privateAggregation within the shared storage worklet.
-  kPrivateAggregation = 109,
+  kPrivateAggregation = 111,
 
   // Private State Tokens API issuance operation
-  kPrivateStateTokenIssuance = 110,
+  kPrivateStateTokenIssuance = 112,
 
   // Client Hint for form factor
-  kClientHintUAFormFactors = 111,
+  kClientHintUAFormFactors = 113,
 
   // Client hint for prefers-reduced-transparency
-  kClientHintPrefersReducedTransparency = 112,
+  kClientHintPrefersReducedTransparency = 114,
 
   // "web-printing" is a isolated context only permissions policy that controls
   // the use of Web Printing API.
-  kWebPrinting = 113,
+  kWebPrinting = 115,
 
   // "usb-unrestricted" is a isolated context only permissions policy that
   // controls whether protected USB interfaces and blocklisted USB devices can
   // be accessed with WebUSB.
-  kUsbUnrestricted = 114,
+  kUsbUnrestricted = 116,
 
   // Captured Surface Control API
-  kCapturedSurfaceControl = 115,
+  kCapturedSurfaceControl = 117,
 
   // SubApps API
-  kSubApps = 116,
+  kSubApps = 118,
 
   // Web Authentication (https://w3c.github.io/webauthn/#sctn-permissions-policy)
-  kPublicKeyCredentialsCreate = 117,
+  kPublicKeyCredentialsCreate = 119,
 
   // Allow enumerateDevices to return audio output device and setSinkId to
   // accept given device id.
-  kSpeakerSelection = 118,
+  kSpeakerSelection = 120,
 
   // Don't change assigned numbers of any item, and don't reuse removed slots.
   // Add new features at the end of the enum.
