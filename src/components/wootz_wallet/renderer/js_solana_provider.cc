@@ -8,7 +8,7 @@
 #include <optional>
 #include <tuple>
 #include <utility>
-
+#include "base/logging.h"
 #include "base/no_destructor.h"
 #include "components/wootz_wallet/common/wootz_wallet_constants.h"
 #include "components/wootz_wallet/common/wootz_wallet_response_helpers.h"
@@ -93,6 +93,7 @@ constexpr char kSolanaProxyHandlerScript[] = R"((function() {
 JSSolanaProvider::JSSolanaProvider(content::RenderFrame* render_frame)
     : RenderFrameObserver(render_frame),
       v8_value_converter_(content::V8ValueConverter::Create()) {
+        LOG(ERROR)<<"JS SOLANA ANKIT" ; 
   EnsureConnected();
   v8_value_converter_->SetStrategy(&strategy_);
 }
@@ -835,6 +836,7 @@ void JSSolanaProvider::OnRequest(
     mojom::SolanaProviderError error,
     const std::string& error_message,
     base::Value::Dict result) {
+        LOG(ERROR)<<"SEND RESPONSE ANKIT";
   v8::HandleScope handle_scope(isolate);
   v8::Local<v8::Context> context = global_context.Get(isolate);
   v8::MicrotasksScope microtasks(isolate, context->GetMicrotaskQueue(),
@@ -875,6 +877,8 @@ void JSSolanaProvider::SendResponse(
     v8::Isolate* isolate,
     v8::Local<v8::Value> response,
     bool success) {
+
+        LOG(ERROR)<<"SEND RESPONSE SOLANA ANKIT";
   v8::HandleScope handle_scope(isolate);
   v8::Local<v8::Context> context = global_context.Get(isolate);
   v8::MicrotasksScope microtasks(isolate, context->GetMicrotaskQueue(),

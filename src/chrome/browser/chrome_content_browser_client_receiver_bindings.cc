@@ -422,6 +422,8 @@ void ChromeContentBrowserClient::RegisterBrowserInterfaceBindersForFrame(
                         .GetByID(site.host());
   if (!extension)
     return;
+
+  LOG(ERROR)<<"ANKIT5 ENABLE_EXTENSIONS";  
   extensions::ExtensionsBrowserClient::Get()
       ->RegisterBrowserInterfaceBindersForFrame(map, render_frame_host,
                                                 extension);

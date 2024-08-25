@@ -166,6 +166,12 @@ bool PermissionUtil::GetPermissionType(ContentSettingsType type,
     case ContentSettingsType::AR:
       *out = PermissionType::AR;
       break;
+    
+    // case PermissionType::WOOTZ_ETHEREUM:
+    //   *out =PermissionType::WOOTZ_ETHEREUM;
+    // case PermissionType::WOOTZ_SOLANA:
+    //   *out =PermissionType::WOOTZ_SOLANA;
+    
     case ContentSettingsType::SMART_CARD_DATA:
       *out = PermissionType::SMART_CARD;
       break;

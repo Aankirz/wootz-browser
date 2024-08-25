@@ -7,7 +7,7 @@ module wootz.mojom;
 
 // The renderer configuration parameters which can change post renderer launch.
 struct DynamicParams {
-  bool install_window_wootz_ethereum_provider = false;
+  bool install_window_wootz_ethereum_provider = true;
   bool install_window_ethereum_provider = false;
   bool allow_overwrite_window_ethereum_provider = true;
   bool wootz_use_native_solana_wallet = false;

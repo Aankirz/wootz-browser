@@ -24,7 +24,7 @@ namespace wootz_wallet {
 class WootzWalletRenderFrameObserver : public content::RenderFrameObserver {
  public:
   using GetDynamicParamsCallback =
-      base::RepeatingCallback<const wootz::mojom::DynamicParams&()>;
+      base::RepeatingCallback<const chrome::mojom::DynamicParamsPtr&()>;
 
   explicit WootzWalletRenderFrameObserver(
       content::RenderFrame* render_frame,

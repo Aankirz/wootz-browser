@@ -27,6 +27,7 @@
 #include "base/values.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
+#include "chrome/renderer/wootz_wallet/wootz_wallet_render_frame_observer.h"
 #include "chrome/common/buildflags.h"
 #include "chrome/common/channel_info.h"
 #include "chrome/common/chrome_content_client.h"
@@ -586,6 +587,10 @@ void ChromeContentRendererClient::RenderFrameCreated(
   service_manager::BinderRegistry* registry = render_frame_observer->registry();
 
   new prerender::PrerenderRenderFrameObserver(render_frame);
+
+  new wootz_wallet::WootzWalletRenderFrameObserver(
+        render_frame,
+        base::BindRepeating(&ChromeRenderThreadObserver::GetDynamicParams));
 
   bool should_allow_for_content_settings =
       base::CommandLine::ForCurrentProcess()->HasSwitch(

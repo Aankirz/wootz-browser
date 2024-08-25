@@ -136,7 +136,9 @@ PermissionTypeToPermissionsPolicyFeature(PermissionType permission) {
     case PermissionType::AR:
       return mojom::PermissionsPolicyFeature::kWebXr;
     case PermissionType::WOOTZ_ETHEREUM:
+      // return mojom::PermissionsPolicyFeature::kEthereum;
     case PermissionType::WOOTZ_SOLANA:
+      // return mojom::PermissionsPolicyFeature::kSolana;
     case PermissionType::SMART_CARD:
       return mojom::PermissionsPolicyFeature::kSmartCard;
     case PermissionType::WEB_PRINTING:

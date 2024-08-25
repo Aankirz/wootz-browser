@@ -12,6 +12,7 @@
 #include "base/no_destructor.h"
 #include "base/strings/string_util.h"
 #include "base/time/time.h"
+#include "base/logging.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
 #include "chrome/browser/ash/shimless_rma/chrome_shimless_rma_delegate.h"
@@ -163,6 +164,7 @@ bool ChromePermissionsClient::WootzCanBypassEmbeddingOriginCheck(
     const GURL& requesting_origin,
     const GURL& embedding_origin,
     ContentSettingsType type) {
+    
   // Note that requesting_origin has an address in it at this point.
   // But even if we get the original origin without the address, we can't
   // check it against the embedding origin for WOOTZ_ETHEREUM and WOOTZ_SOLANA
@@ -551,6 +553,8 @@ bool ChromePermissionsClient::CanBypassEmbeddingOriginCheck(
     return true;
 #endif
 
+  LOG(ERROR) << __func__ << ":" << requesting_origin;
+  LOG(ERROR) << __func__ << ":" << embedding_origin;
   // The New Tab Page is excluded from origin checks as its effective
   // requesting origin may be the Default Search Engine origin.
   return embedding_origin ==

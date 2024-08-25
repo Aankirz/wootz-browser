@@ -75,9 +75,12 @@ void WootzWalletRenderFrameObserver::DidFinishLoad() {
 }
 
 void WootzWalletRenderFrameObserver::DidClearWindowObject() {
+  LOG(ERROR)<<"DidClearWindowObject ANKIT";
   if (!CanCreateProvider()) {
     return;
   }
+
+  LOG(ERROR)<<"DidClearWindowObject2 ANKIT2";
 
   CHECK(render_frame());
   v8::Isolate* isolate =
@@ -88,6 +91,8 @@ void WootzWalletRenderFrameObserver::DidClearWindowObject() {
   if (context.IsEmpty()) {
     return;
   }
+  LOG(ERROR)<<"DidClearWindowObject3 ANKIT3";
+
   v8::MicrotasksScope microtasks(isolate, context->GetMicrotaskQueue(),
                                  v8::MicrotasksScope::kDoNotRunMicrotasks);
 
@@ -107,6 +112,7 @@ void WootzWalletRenderFrameObserver::DidClearWindowObject() {
   if (dynamic_params.install_window_wootz_ethereum_provider &&
       web_frame->GetDocument().IsDOMFeaturePolicyEnabled(isolate, context,
                                                          "ethereum")) {
+     LOG(ERROR)<<"JSEthereumProvider INSTALL ANKIT";                                                     
     JSEthereumProvider::Install(
         dynamic_params.install_window_ethereum_provider,
         dynamic_params.allow_overwrite_window_ethereum_provider,
