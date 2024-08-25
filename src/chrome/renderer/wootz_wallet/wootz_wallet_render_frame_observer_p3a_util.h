@@ -25,8 +25,7 @@ class WootzWalletRenderFrameObserverP3AUtil {
   WootzWalletRenderFrameObserverP3AUtil();
   ~WootzWalletRenderFrameObserverP3AUtil();
 
-  void ReportJSProviders(content::RenderFrame* render_frame,
-                         const wootz::mojom::DynamicParams& dynamic_params);
+  void ReportJSProviders(content::RenderFrame* render_frame);
 
  private:
   bool EnsureConnected(content::RenderFrame* render_frame);

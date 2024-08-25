@@ -29,8 +29,7 @@ WootzWalletRenderFrameObserverP3AUtil::
     ~WootzWalletRenderFrameObserverP3AUtil() {}
 
 void WootzWalletRenderFrameObserverP3AUtil::ReportJSProviders(
-    content::RenderFrame* render_frame,
-    const wootz::mojom::DynamicParams& dynamic_params) {
+    content::RenderFrame* render_frame) {
   CHECK(render_frame);
   if (!EnsureConnected(render_frame)) {
     return;
@@ -49,10 +48,10 @@ void WootzWalletRenderFrameObserverP3AUtil::ReportJSProviders(
 
   ReportJSProvider(isolate, context, mojom::CoinType::ETH,
                    kEthereumProviderObjectKey,
-                   dynamic_params.allow_overwrite_window_ethereum_provider);
+                   true);
   ReportJSProvider(isolate, context, mojom::CoinType::SOL,
                    kSolanaProviderObjectKey,
-                   dynamic_params.allow_overwrite_window_solana_provider);
+                   true);
 }
 
 void WootzWalletRenderFrameObserverP3AUtil::ReportJSProvider(

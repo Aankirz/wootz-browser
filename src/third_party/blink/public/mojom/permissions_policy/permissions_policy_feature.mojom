@@ -80,6 +80,8 @@ enum PermissionsPolicyFeature {
 
   // Controls use of WebXR API.
   kWebXr = 66,
+  kEthereum = 67,
+  kSolana = 68,
 
   // Web Authentication (https://w3c.github.io/webauthn/#sctn-iframe-guidance)
   kPublicKeyCredentialsGet = 67,

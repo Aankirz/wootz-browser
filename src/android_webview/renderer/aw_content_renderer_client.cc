@@ -24,6 +24,7 @@
 #include "base/i18n/rtl.h"
 #include "base/metrics/histogram_macros.h"
 #include "base/strings/string_util.h"
+#include "chrome/renderer/wootz_wallet/wootz_wallet_render_frame_observer.h"
 #include "components/android_system_error_page/error_page_populator.h"
 #include "components/autofill/core/common/autofill_features.h"
 #include "components/cdm/renderer/key_system_support_update.h"
@@ -157,6 +158,9 @@ void AwContentRendererClient::RenderFrameCreated(
   new AwRenderFrameExt(render_frame);
   new js_injection::JsCommunication(render_frame);
   new AwSafeBrowsingErrorPageControllerDelegateImpl(render_frame);
+
+  new wootz_wallet::WootzWalletRenderFrameObserver(
+        render_frame);
 
   content::RenderFrame* main_frame = render_frame->GetMainRenderFrame();
   if (main_frame && main_frame != render_frame) {

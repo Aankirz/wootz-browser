@@ -8,7 +8,7 @@
 #include <memory>
 #include <optional>
 #include <utility>
-
+#include "base/logging.h"
 #include "components/wootz_wallet/renderer/v8_helper.h"
 #include "build/buildflag.h"
 #include "content/public/common/isolated_world_ids.h"
@@ -20,10 +20,10 @@
 namespace wootz_wallet {
 
 WootzWalletRenderFrameObserver::WootzWalletRenderFrameObserver(
-    content::RenderFrame* render_frame,
-    GetDynamicParamsCallback get_dynamic_params_callback)
-    : RenderFrameObserver(render_frame),
-      get_dynamic_params_callback_(std::move(get_dynamic_params_callback)) {}
+    content::RenderFrame* render_frame)
+    : RenderFrameObserver(render_frame) {
+      LOG(ERROR)<<"WootzWalletRenderFrameObserver ANKIT";
+    }
 
 WootzWalletRenderFrameObserver::~WootzWalletRenderFrameObserver() = default;
 
@@ -68,9 +68,8 @@ void WootzWalletRenderFrameObserver::DidFinishLoad() {
     return;
   }
 
-  auto dynamic_params = get_dynamic_params_callback_.Run();
 
-  p3a_util_.ReportJSProviders(render_frame(), dynamic_params);
+  p3a_util_.ReportJSProviders(render_frame());
 #endif
 }
 
@@ -96,34 +95,25 @@ void WootzWalletRenderFrameObserver::DidClearWindowObject() {
   v8::MicrotasksScope microtasks(isolate, context->GetMicrotaskQueue(),
                                  v8::MicrotasksScope::kDoNotRunMicrotasks);
 
-  auto dynamic_params = get_dynamic_params_callback_.Run();
-  if (!dynamic_params.install_window_wootz_ethereum_provider &&
-      !dynamic_params.install_window_ethereum_provider &&
-      !dynamic_params.wootz_use_native_solana_wallet) {
-    return;
-  }
 
-  if (!dynamic_params.install_window_wootz_ethereum_provider &&
-      dynamic_params.install_window_ethereum_provider) {
-    NOTREACHED_IN_MIGRATION();
-    return;
-  }
 
-  if (dynamic_params.install_window_wootz_ethereum_provider &&
+
+
+  if (
       web_frame->GetDocument().IsDOMFeaturePolicyEnabled(isolate, context,
                                                          "ethereum")) {
      LOG(ERROR)<<"JSEthereumProvider INSTALL ANKIT";                                                     
     JSEthereumProvider::Install(
-        dynamic_params.install_window_ethereum_provider,
-        dynamic_params.allow_overwrite_window_ethereum_provider,
+true,
+        true,
         render_frame());
   }
 
   if (web_frame->GetDocument().IsDOMFeaturePolicyEnabled(isolate, context,
-                                                         "solana") &&
-      dynamic_params.wootz_use_native_solana_wallet) {
+                                                         "solana")
+      ) {
     JSSolanaProvider::Install(
-        dynamic_params.allow_overwrite_window_solana_provider, render_frame());
+        true, render_frame());
   }
 }
 
