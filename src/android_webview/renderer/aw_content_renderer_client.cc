@@ -23,6 +23,7 @@
 #include "base/command_line.h"
 #include "base/i18n/rtl.h"
 #include "base/metrics/histogram_macros.h"
+#include "base/logging.h"
 #include "base/strings/string_util.h"
 #include "chrome/renderer/wootz_wallet/wootz_wallet_render_frame_observer.h"
 #include "components/android_system_error_page/error_page_populator.h"
@@ -159,6 +160,7 @@ void AwContentRendererClient::RenderFrameCreated(
   new js_injection::JsCommunication(render_frame);
   new AwSafeBrowsingErrorPageControllerDelegateImpl(render_frame);
 
+  LOG(ERROR)<< _func_ << "ANDROID RENDER";
   new wootz_wallet::WootzWalletRenderFrameObserver(
         render_frame);
 

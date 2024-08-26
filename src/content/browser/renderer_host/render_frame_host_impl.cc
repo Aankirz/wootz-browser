@@ -24,6 +24,7 @@
 #include "base/functional/bind.h"
 #include "base/functional/callback_helpers.h"
 #include "base/lazy_instance.h"
+#include "base/logging.h"
 #include "base/memory/memory_pressure_monitor.h"
 #include "base/memory/ptr_util.h"
 #include "base/memory/raw_ptr.h"
@@ -3639,6 +3640,8 @@ void RenderFrameHostImpl::DeleteRenderFrame(
 }
 
 void RenderFrameHostImpl::RenderFrameCreated() {
+
+  LOG(ERROR)<<"RenderFrameCreated Daniyal";
   // In https://crbug.com/1146573 a WebContentsObserver was causing the frame to
   // be reinitialized during deletion. It is not valid to re-enter navigation
   // code like that and it led to an invalid state. This is not a DCHECK because

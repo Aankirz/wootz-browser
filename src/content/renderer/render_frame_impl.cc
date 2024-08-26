@@ -2000,6 +2000,7 @@ RenderFrameImpl::~RenderFrameImpl() {
 }
 
 void RenderFrameImpl::Initialize(blink::WebFrame* parent) {
+  LOG(ERROR)<<"RenderFrameImpl Daniyal";
   initialized_ = true;
   is_main_frame_ = !parent;
   if (is_main_frame_)
@@ -2018,8 +2019,13 @@ void RenderFrameImpl::Initialize(blink::WebFrame* parent) {
     TRACE_EVENT("navigation", "ContentRendererClient::RenderFrameCreated");
     // We delay calling this until we have the WebFrame so that any observer or
     // embedder can call GetWebFrame on any RenderFrame.
+
+    LOG(ERROR)<<"RENDER FRAME CREATED Daniyal";
     GetContentClient()->renderer()->RenderFrameCreated(this);
   }
+
+    LOG(ERROR)<<"RENDER FRAME CREATED ANKIT3";
+
 
   // blink::AudioOutputIPCFactory::io_task_runner_ may be null in tests.
   auto& factory = blink::AudioOutputIPCFactory::GetInstance();

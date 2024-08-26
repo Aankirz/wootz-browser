@@ -9,6 +9,7 @@
 #include <string_view>
 #include <utility>
 
+#include "base/logging.h"
 #include "base/check_op.h"
 #include "base/command_line.h"
 #include "base/debug/crash_logging.h"
@@ -582,6 +583,7 @@ void ChromeContentRendererClient::ExposeInterfacesToBrowser(
 
 void ChromeContentRendererClient::RenderFrameCreated(
     content::RenderFrame* render_frame) {
+    //  LOG(ERROR)<< "RenderFrameCreated ANKIT";
       new wootz_wallet::WootzWalletRenderFrameObserver(
         render_frame);
 

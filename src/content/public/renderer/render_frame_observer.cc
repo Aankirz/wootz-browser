@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 #include "content/public/renderer/render_frame_observer.h"
-
+#include "base/logging.h"
 #include "content/renderer/render_frame_impl.h"
 
 using blink::WebFrame;
@@ -13,6 +13,7 @@ namespace content {
 RenderFrameObserver::RenderFrameObserver(RenderFrame* render_frame)
     : render_frame_(render_frame) {
   // |render_frame| can be NULL on unit testing.
+  LOG(ERROR)<<"RenderFrameObserver BALRAM";
   if (render_frame) {
     RenderFrameImpl* impl = static_cast<RenderFrameImpl*>(render_frame);
 #if BUILDFLAG(CONTENT_ENABLE_LEGACY_IPC)

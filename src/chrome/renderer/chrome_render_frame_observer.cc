@@ -21,6 +21,7 @@
 #include "base/synchronization/lock.h"
 #include "base/time/time.h"
 #include "base/trace_event/trace_event.h"
+#include "base/logging.h"
 #include "build/build_config.h"
 #include "chrome/common/chrome_constants.h"
 #include "chrome/common/chrome_isolated_world_ids.h"
@@ -189,6 +190,7 @@ ChromeRenderFrameObserver::ChromeRenderFrameObserver(
           &ChromeRenderFrameObserver::OnRenderFrameObserverRequest,
           base::Unretained(this)));
 
+  LOG(ERROR)<<"ChromeRenderFrameObserver BALRAM";
   // Don't do anything else for subframes.
   if (!render_frame->IsMainFrame())
     return;
