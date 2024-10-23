@@ -628,6 +628,7 @@ android_library("browser_java") {
     "java/src/org/chromium/android_webview/FileModeConversionHelper.java",
     "java/src/org/chromium/android_webview/FindAddress.java",
     "java/src/org/chromium/android_webview/FullScreenView.java",
+    "java/src/org/chromium/android_webview/InterceptedRequestData.java",
     "java/src/org/chromium/android_webview/HttpAuthDatabase.java",
     "java/src/org/chromium/android_webview/JsPromptResultReceiver.java",
     "java/src/org/chromium/android_webview/JsReplyProxy.java",
@@ -694,6 +695,119 @@ android_library("browser_java") {
     "java/src/org/chromium/android_webview/variations/FastVariationsSeedSafeModeAction.java",
     "java/src/org/chromium/android_webview/variations/VariationsSeedLoader.java",
     "java/src/org/chromium/android_webview/variations/VariationsSeedSafeModeAction.java",
+
+    # Wootz API Layer
+    "java/src/com/wootz/browser/WootzCookieManager.java",
+    "java/src/com/wootz/browser/WootzHttpAuthHandler.java",
+    "java/src/com/wootz/browser/WootzJavascriptInterface.java",
+    "java/src/com/wootz/browser/WootzJsPromptResult.java",
+    "java/src/com/wootz/browser/WootzJsResult.java",
+    "java/src/com/wootz/browser/WootzSettings.java",
+    "java/src/com/wootz/browser/WootzSslErrorHandler.java",
+    "java/src/com/wootz/browser/WootzViewClient.java",
+    "java/src/com/wootz/browser/WootzView.java",
+    "java/src/com/wootz/browser/WootzWebClient.java",
+
+    # Files in the 'impl' directory
+    "java/src/com/wootz/browser/impl/WootzAwContentsClientProxy.java",
+    "java/src/com/wootz/browser/impl/WootzHttpAuthHandlerProxy.java",
+    "java/src/com/wootz/browser/impl/WootzInitializer.java",
+    "java/src/com/wootz/browser/impl/WootzJsPromptResultProxy.java",
+    "java/src/com/wootz/browser/impl/WootzJsResultReceiverProxy.java",
+    "java/src/com/wootz/browser/impl/WootzSettingsProxy.java",
+    "java/src/com/wootz/browser/impl/WootzSslErrorHandlerProxy.java",
+
+      # Files under src/android_webview/java/src/org/chromium/content/app
+    "java/src/org/chromium/content/app/ChildProcessService.java",
+    "java/src/org/chromium/content/app/ContentMain.java",
+    "java/src/org/chromium/content/app/LibraryLoader.java",
+    "java/src/org/chromium/content/app/NativeLibraries.java",
+    "java/src/org/chromium/content/app/PrivilegedProcessService.java",
+    "java/src/org/chromium/content/app/SandboxedProcessService.java",
+    # Privileged and sandboxed processes
+    "java/src/org/chromium/content/app/PrivilegedProcessService0.java",
+    "java/src/org/chromium/content/app/PrivilegedProcessService1.java",
+    "java/src/org/chromium/content/app/PrivilegedProcessService2.java",
+    "java/src/org/chromium/content/app/SandboxedProcessService0.java",
+    "java/src/org/chromium/content/app/SandboxedProcessService1.java",
+    "java/src/org/chromium/content/app/SandboxedProcessService2.java",
+    "java/src/org/chromium/content/app/SandboxedProcessService3.java",
+    "java/src/org/chromium/content/app/SandboxedProcessService4.java",
+    "java/src/org/chromium/content/app/SandboxedProcessService5.java",
+
+    # Files under src/android_webview/java/src/org/chromium/content/browser
+    "java/src/org/chromium/content/browser/ActivityContentVideoViewDelegate.java",
+    "java/src/org/chromium/content/browser/AndroidBrowserProcess.java",
+    "java/src/org/chromium/content/browser/ChildProcessConnection.java",
+    "java/src/org/chromium/content/browser/ChildProcessLauncher.java",
+    "java/src/org/chromium/content/browser/ContentSettings.java",
+    "java/src/org/chromium/content/browser/ContentVideoViewContextDelegate.java",
+    "java/src/org/chromium/content/browser/ContentVideoView.java",
+    "java/src/org/chromium/content/browser/ContentViewClient.java",
+    "java/src/org/chromium/content/browser/ContentViewCore.java",
+    "java/src/org/chromium/content/browser/ContentViewDownloadDelegate.java",
+    "java/src/org/chromium/content/browser/ContentViewGestureHandler.java",
+    "java/src/org/chromium/content/browser/ContentView.java",
+    "java/src/org/chromium/content/browser/ContentViewRenderView.java",
+    "java/src/org/chromium/content/browser/ContentViewStatics.java",
+    "java/src/org/chromium/content/browser/DeviceMotionAndOrientation.java",
+    "java/src/org/chromium/content/browser/DeviceUtils.java",
+    "java/src/org/chromium/content/browser/DownloadController.java",
+    "java/src/org/chromium/content/browser/FileDescriptorInfo.java",
+    "java/src/org/chromium/content/browser/HeapStatsLogger.java",
+    "java/src/org/chromium/content/browser/InterstitialPageDelegateAndroid.java",
+    "java/src/org/chromium/content/browser/JavascriptInterface.java",
+    "java/src/org/chromium/content/browser/JellyBeanContentView.java",
+    "java/src/org/chromium/content/browser/LoadUrlParams.java",
+    "java/src/org/chromium/content/browser/LocationProvider.java",
+    "java/src/org/chromium/content/browser/LongPressDetector.java",
+    "java/src/org/chromium/content/browser/MediaResourceGetter.java",
+    "java/src/org/chromium/content/browser/NavigationClient.java",
+    "java/src/org/chromium/content/browser/NavigationEntry.java",
+    "java/src/org/chromium/content/browser/NavigationHistory.java",
+    "java/src/org/chromium/content/browser/PageInfo.java",
+    "java/src/org/chromium/content/browser/PageTransitionTypes.java",
+    "java/src/org/chromium/content/browser/PageTransitionTypes.template",
+    "java/src/org/chromium/content/browser/PepperPluginManager.java",
+    "java/src/org/chromium/content/browser/PopupZoomer.java",
+    "java/src/org/chromium/content/browser/RenderCoordinates.java",
+    "java/src/org/chromium/content/browser/ResourceExtractor.java",
+    "java/src/org/chromium/content/browser/SmoothScroller.java",
+    "java/src/org/chromium/content/browser/SnapScrollController.java",
+    "java/src/org/chromium/content/browser/TouchPoint.java",
+    "java/src/org/chromium/content/browser/TracingIntentHandler.java",
+    "java/src/org/chromium/content/browser/VSyncManager.java",
+    "java/src/org/chromium/content/browser/VSyncMonitor.java",
+    "java/src/org/chromium/content/browser/WebContentsObserverAndroid.java",
+    "java/src/org/chromium/content/browser/ZoomManager.java",
+    "java/src/org/chromium/content/browser/accessibility/AccessibilityInjector.java",
+    "java/src/org/chromium/content/browser/accessibility/JellyBeanAccessibilityInjector.java",
+    "java/src/org/chromium/content/browser/input/AdapterInputConnection.java",
+    "java/src/org/chromium/content/browser/input/CursorController.java",
+    "java/src/org/chromium/content/browser/input/DateTimeChooserAndroid.java",
+    "java/src/org/chromium/content/browser/input/DateTimePickerDialog.java",
+    "java/src/org/chromium/content/browser/input/HandleView.java",
+    "java/src/org/chromium/content/browser/input/ImeAdapter.java",
+    "java/src/org/chromium/content/browser/input/InputDialogContainer.java",
+    "java/src/org/chromium/content/browser/input/InputMethodManagerWrapper.java",
+    "java/src/org/chromium/content/browser/input/InsertionHandleController.java",
+    "java/src/org/chromium/content/browser/input/MonthPickerDialog.java",
+    "java/src/org/chromium/content/browser/input/MonthPicker.java",
+    "java/src/org/chromium/content/browser/input/SelectionHandleController.java",
+    "java/src/org/chromium/content/browser/input/SelectPopupDialog.java",
+    "java/src/org/chromium/content/browser/third_party/GestureDetector.java",
+
+    # Files under src/android_webview/java/src/org/chromium/content/common
+    "java/src/org/chromium/content/common/CleanupReference.java",
+    "java/src/org/chromium/content/common/CommandLine.java",
+    "java/src/org/chromium/content/common/DeviceTelephonyInfo.java",
+    "java/src/org/chromium/content/common/IChildProcessCallback.aidl",
+    "java/src/org/chromium/content/common/IChildProcessService.aidl",
+    "java/src/org/chromium/content/common/PerfTraceEvent.java",
+    "java/src/org/chromium/content/common/ProcessInitException.java",
+    "java/src/org/chromium/content/common/ResultCodes.java",
+    "java/src/org/chromium/content/common/ResultCodes.template",
+    "java/src/org/chromium/content/common/TraceEvent.java",
   ]
   deps = [
     ":common_aidl_java",
@@ -776,39 +890,6 @@ android_library("browser_java") {
   ]
 
   resources_package = "org.chromium.android_webview"
-}
-
-android_library("wootz_browser_java") {
-  sources = [
-    "java/src/com/wootz/browser/WootzCookieManager.java",
-    "java/src/com/wootz/browser/WootzHttpAuthHandler.java",
-    "java/src/com/wootz/browser/WootzJavascriptInterface.java",
-    "java/src/com/wootz/browser/WootzJsPromptResult.java",
-    "java/src/com/wootz/browser/WootzJsResult.java",
-    "java/src/com/wootz/browser/WootzSettings.java",
-    "java/src/com/wootz/browser/WootzSslErrorHandler.java",
-    "java/src/com/wootz/browser/WootzViewClient.java",
-    "java/src/com/wootz/browser/WootzView.java",
-    "java/src/com/wootz/browser/WootzWebClient.java",
-
-    # Files in the 'impl' directory
-    "java/src/com/wootz/browser/impl/WootzAwContentsClientProxy.java",
-    "java/src/com/wootz/browser/impl/WootzHttpAuthHandlerProxy.java",
-    "java/src/com/wootz/browser/impl/WootzInitializer.java",
-    "java/src/com/wootz/browser/impl/WootzJsPromptResultProxy.java",
-    "java/src/com/wootz/browser/impl/WootzJsResultReceiverProxy.java",
-    "java/src/com/wootz/browser/impl/WootzSettingsProxy.java",
-    "java/src/com/wootz/browser/impl/WootzSslErrorHandlerProxy.java",
-  ]
-  
-  deps = [
-    "//base:base_java",                             # For core base utilities like ThreadUtils, PathUtils, etc.
-    "//android_webview/java:android_webview_java",  # WebView classes (AwContents, AwSettings, etc.)
-    "//content/public/android:content_java",        # For classes like ContentSettings (from content.browser)
-    "//ui/android:ui_no_recycler_view",             # UI components, but without pulling in RecyclerView
-    "//net/android:net_java",                       # For network-related classes (e.g., AwHttpAuthHandler)
-    "//media/base/android:media_java",              # Media support (handling media in WebView)
-  ]
 }
 
 

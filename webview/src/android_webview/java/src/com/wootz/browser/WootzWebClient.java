@@ -8,13 +8,13 @@ import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
 import android.webkit.ValueCallback;
-import android.webkit.WebWootzClient.CustomViewCallback;
+import android.webkit.WebChromeClient.CustomViewCallback;
 import android.webkit.WebStorage;
 
 /**
  * WootzView equivalent of WebWootzClient.
  *
- * @see android.webkit.WebWootzClient
+ * @see android.webkit.WebChromeClient
  */
 public class WootzWebClient {
   // Mostly mirrors

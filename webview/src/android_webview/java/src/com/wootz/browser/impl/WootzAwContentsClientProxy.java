@@ -23,7 +23,7 @@ import android.webkit.DownloadListener;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceResponse;
 import android.webkit.GeolocationPermissions.Callback;
-import android.webkit.WebWootzClient.CustomViewCallback;
+import android.webkit.WebChromeClient.CustomViewCallback;
 import android.webkit.WebView.FindListener;
 
 /** Glue that passes calls from the Chromium view to a WebWootzClient. */

@@ -27,6 +27,7 @@ public class WootzCookieManager {
    * Whether the application's WootzView instances send and accept cookies.
    * @return true if WootzView instances send and accept cookies for file
    *     scheme URLs
+   * 
    */
   public boolean acceptCookie() {
     return awCookieManager_.acceptCookie();

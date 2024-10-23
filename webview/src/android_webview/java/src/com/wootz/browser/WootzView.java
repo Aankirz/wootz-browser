@@ -153,8 +153,8 @@ public class WootzView extends FrameLayout {
    * Sets the WootzWebClient associated with this view.
    *
    * @param WootzWebClient the new handler; replaces the old handler
-   * @see android.webkit.WebView#setWebWootzClient(android.webkit.WebWootzClient)
-   * @see android.webkit.WebWootzClient
+   * @see android.webkit.WebView#setWebWootzClient(android.webkit.WebChromeClient)
+   * @see android.webkit.WebChromeClient
    */
   public void setWootzWebClient(WootzWebClient WootzWebClient) {
     awContentsClient_.setWootzWebClient(WootzWebClient);
