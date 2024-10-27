@@ -4,10 +4,12 @@ import java.util.Map;
 
 import org.chromium.android_webview.AwBrowserContext;
 import org.chromium.android_webview.AwContents;
+import org.chromium.android_webview.AwSettings;
+import org.chromium.base.Callback; 
 import org.chromium.content.browser.ContentViewCore;
 import org.chromium.content.browser.ContentViewStatics;
-import org.chromium.content.browser.LoadUrlParams;
 import org.chromium.content.browser.ContentViewCore.JavaScriptCallback;
+import org.chromium.content_public.browser.LoadUrlParams;
 
 import com.wootz.browser.impl.WootzAwContentsClientProxy;
 import com.wootz.browser.impl.WootzInitializer;
@@ -18,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
@@ -83,13 +86,18 @@ public class WootzView extends FrameLayout {
     SharedPreferences sharedPreferences = context.getSharedPreferences(
         "Wootzview", Context.MODE_PRIVATE);
     // TODO(pwnall): is there a better way to get an AwBrowserContext?
-    browserContext_ = new AwBrowserContext(sharedPreferences);
+     // Extract a long value from SharedPreferences, or use a default value
+     long storedIdentifier = sharedPreferences.getLong("browser_context_id", System.currentTimeMillis());
+     browserContext_ = new AwBrowserContext(storedIdentifier);
 
     internalAccessAdapter_ = new WootzView.WootzInternalAcccessAdapter();
     awContentsClient_ = new WootzAwContentsClientProxy(this);
-    awContents_ = new AwContents(browserContext_, this, internalAccessAdapter_,
-        awContentsClient_, true);
-    contentViewCore_ = awContents_.getContentViewCore();
+
+    awContents_ = new AwContents(browserContext_, this, getContext(), 
+    internalAccessAdapter_, null, 
+    awContentsClient_, new AwSettings(getContext(), false, false, false, false, true));
+
+
   }
 
   //// Non-WebView extensions
@@ -204,9 +212,7 @@ public class WootzView extends FrameLayout {
    * @see android.webkit.WebViewDatabase#clearHttpAuthUsernamePassword()
    */
   public void setHttpAuthUsernamePassword(String host, String realm,
-      String username, String password) {
-    awContents_.setHttpAuthUsernamePassword(host, realm, username, password);
-  }
+      String username, String password) { }
 
   /**
    * Retrieves HTTP authentication credentials for a given host and realm.
@@ -222,9 +228,6 @@ public class WootzView extends FrameLayout {
    * @see android.webkit.WebViewDatabase#hasHttpAuthUsernamePassword()
    * @see android.webkit.WebViewDatabase#clearHttpAuthUsernamePassword()
    */
-  public String[] getHttpAuthUsernamePassword(String host, String realm) {
-      return awContents_.getHttpAuthUsernamePassword(host, realm);
-  }
 
   /**
    * Saves the state of this WebView used in
@@ -365,13 +368,10 @@ public class WootzView extends FrameLayout {
    *
    * @param filename the filename where the archive should be placed
    */
-  public void saveWebArchive(String filename) {
-    ValueCallback<String> callback = new ValueCallback<String>() {
-      @Override
-      public void onReceiveValue(String value) { }
-    };
-    awContents_.saveWebArchive(filename, false, callback);
-  }
+  public void saveWebArchive(String basename, boolean autoname,
+  Callback<String> callback) {
+    awContents_.saveWebArchive(basename, autoname, callback);
+}
 
   /**
    * Saves the current view as a web archive.
@@ -385,10 +385,10 @@ public class WootzView extends FrameLayout {
    *                 under which the file was saved, or null if saving the
    *                 file failed.
    */
-  public void saveWebArchive(String basename, boolean autoname,
-      ValueCallback<String> callback) {
-    awContents_.saveWebArchive(basename, autoname, callback);
-  }
+  // public void saveWebArchive(String basename, boolean autoname,
+  //     ValueCallback<String> callback) {
+  //   awContents_.saveWebArchive(basename, autoname, callback);
+  // }
 
   /**
    * Stops the current load.
@@ -563,7 +563,7 @@ public class WootzView extends FrameLayout {
    * @return the URL for the current page
    */
   public String getUrl() {
-    return awContents_.getUrl();
+    return awContents_.getUrl().getSpec();
   }
 
   /**
@@ -786,8 +786,8 @@ public class WootzView extends FrameLayout {
    * @param name the name used to expose the object in JavaScript
    */
   public void addJavascriptInterface(Object object, String name) {
-    awContents_.addPossiblyUnsafeJavascriptInterface(object, name,
-        WootzJavascriptInterface.class);
+    awContents_.addJavascriptInterface(object, name);
+
   }
 
   /**
@@ -1012,7 +1012,7 @@ public class WootzView extends FrameLayout {
     super.onInitializeAccessibilityNodeInfo(info);
     if (awContents_ != null) {
       info.setClassName(WootzView.class.getName());
-      awContents_.onInitializeAccessibilityNodeInfo(info);
+      // awContents_.onInitializeAccessibilityNodeInfo(info);
     }
   }
   @Override
@@ -1020,7 +1020,7 @@ public class WootzView extends FrameLayout {
     super.onInitializeAccessibilityEvent(event);
     if (awContents_ != null) {
       event.setClassName(WootzView.class.getName());
-      awContents_.onInitializeAccessibilityEvent(event);
+      // awContents_.onInitializeAccessibilityEvent(event);
     }
   }
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -1099,70 +1099,73 @@ public class WootzView extends FrameLayout {
     }
   }
 
-  /** Glue that passes calls from the Chromium view to its container (us). */
   private class WootzInternalAcccessAdapter implements AwContents.InternalAccessDelegate {
-    //// Lifted from chromium/src/android_webview/test/shell/src/org/chromium/android_webview/test/AwTestContainerView
-    @Override
     public boolean drawChild(Canvas canvas, View child, long drawingTime) {
-      return WootzView.this.drawChild(canvas, child, drawingTime);
+        return WootzView.this.drawChild(canvas, child, drawingTime);
     }
+
     @Override
     public boolean super_onKeyUp(int keyCode, KeyEvent event) {
-      return WootzView.super.onKeyUp(keyCode, event);
+        return WootzView.super.onKeyUp(keyCode, event);
     }
-    @Override
+
     public boolean super_dispatchKeyEventPreIme(KeyEvent event) {
-      return WootzView.super.dispatchKeyEventPreIme(event);
+        return WootzView.super.dispatchKeyEventPreIme(event);
     }
+
     @Override
     public boolean super_dispatchKeyEvent(KeyEvent event) {
-      return WootzView.super.dispatchKeyEvent(event);
+        return WootzView.super.dispatchKeyEvent(event);
     }
+
     @Override
     public boolean super_onGenericMotionEvent(MotionEvent event) {
-      return WootzView.super.onGenericMotionEvent(event);
+        return WootzView.super.onGenericMotionEvent(event);
     }
+
     @Override
     public void super_onConfigurationChanged(Configuration newConfig) {
-      WootzView.super.onConfigurationChanged(newConfig);
+        WootzView.super.onConfigurationChanged(newConfig);
     }
+
     @Override
     public void onScrollChanged(int lPix, int tPix, int oldlPix, int oldtPix) {
-      WootzView.this.onScrollChanged(lPix, tPix, oldlPix, oldtPix);
+        WootzView.this.onScrollChanged(lPix, tPix, oldlPix, oldtPix);
     }
-    @Override
+
     public boolean awakenScrollBars() {
-      return WootzView.this.awakenScrollBars();
+        return WootzView.this.awakenScrollBars();
     }
-    @Override
+
     public boolean super_awakenScrollBars(int startDelay, boolean invalidate) {
-      return WootzView.super.awakenScrollBars(startDelay, invalidate);
+        return WootzView.super.awakenScrollBars(startDelay, invalidate);
     }
+
     @Override
     public void setMeasuredDimension(int measuredWidth, int measuredHeight) {
-      WootzView.this.setMeasuredDimension(measuredWidth, measuredHeight);
+        WootzView.this.setMeasuredDimension(measuredWidth, measuredHeight);
     }
+
     @Override
-    public boolean requestDrawGL(Canvas canvas) {
-      if (canvas != null) {
-        if (canvas.isHardwareAccelerated()) {
-          // TODO(pwnall): figure out what AwContents wants from us, and do it;
-          //               most likely something to do with
-          //               AwContents.getAwDrawGLFunction()
-          return false;
+    public void super_startActivityForResult(Intent intent, int requestCode) {
+        if (getContext() instanceof Activity) {
+            ((Activity) getContext()).startActivityForResult(intent, requestCode);
         } else {
-          return false;
+            // Handle the case where context is not an Activity
         }
-      } else {
-        if (WootzView.this.isHardwareAccelerated()) {
-          // TODO(pwnall): figure out what AwContents wants from us, and do it;
-          //               most likely something to do with
-          //               AwContents.getAwDrawGLFunction()
-          return false;
-        } else {
-          return false;
-        }
-      }
     }
-  }
+
+    @Override
+    public int super_getScrollBarStyle() {
+        return WootzView.this.getScrollBarStyle();
+    }
+
+    public boolean requestDrawGL(Canvas canvas) {
+        if (canvas != null) {
+            return canvas.isHardwareAccelerated();
+        }
+        return false;
+    }
+ }
+
 }

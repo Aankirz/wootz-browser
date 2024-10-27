@@ -24,7 +24,7 @@ public class WootzSettingsProxy extends WootzSettings {
 
   public WootzSettingsProxy(AwContents awContents) {
     awContents_ = awContents;
-    contents_ = awContents_.getContentSettings();
+    contents_ = awContents_.getSettings();
     web_ = awContents_.getSettings();
   }
 
@@ -85,14 +85,6 @@ public class WootzSettingsProxy extends WootzSettings {
     return web_.getLoadWithOverviewMode();
   }
   @Override
-  public void setSaveFormData(boolean save) {
-    web_.setSaveFormData(save);
-  }
-  @Override
-  public boolean getSaveFormData() {
-    return web_.getSaveFormData();
-  }
-  @Override
   public void setSavePassword(boolean save) {
     // TODO Auto-generated method stub
   }
@@ -146,30 +138,11 @@ public class WootzSettingsProxy extends WootzSettings {
   @Override
   public void setLayoutAlgorithm(LayoutAlgorithm l) {
     AwSettings.LayoutAlgorithm algorithm = AwSettings.LayoutAlgorithm.NORMAL;
-    switch(l) {
-    case NORMAL:
-      algorithm = AwSettings.LayoutAlgorithm.NORMAL;
-    case SINGLE_COLUMN:
-      algorithm = AwSettings.LayoutAlgorithm.SINGLE_COLUMN;
-    case NARROW_COLUMNS:
-      algorithm = AwSettings.LayoutAlgorithm.NARROW_COLUMNS;
-    }
     web_.setLayoutAlgorithm(algorithm);
   }
   @Override
   public LayoutAlgorithm getLayoutAlgorithm() {
-    switch (web_.getLayoutAlgorithm()) {
-    case NORMAL:
       return LayoutAlgorithm.NORMAL;
-    case SINGLE_COLUMN:
-      return LayoutAlgorithm.SINGLE_COLUMN;
-    case NARROW_COLUMNS:
-      return LayoutAlgorithm.NARROW_COLUMNS;
-    case TEXT_AUTOSIZING:
-      return LayoutAlgorithm.NORMAL;
-    default:
-      return LayoutAlgorithm.NORMAL;
-    }
   }
   @Override
   public void setStandardFontFamily(String font) {
@@ -289,10 +262,10 @@ public class WootzSettingsProxy extends WootzSettings {
   public void setAllowFileAccessFromFileURLs(boolean flag) {
     web_.setAllowFileAccessFromFileURLs(flag);
   }
-  @Override
-  public void setPluginState(PluginState state) {
-    web_.setPluginState(state);
-  }
+  // @Override
+  // public void setPluginState(PluginState state) {
+  //   web_.setPluginState(state);
+  // }
   @Override
   public void setDatabasePath(String databasePath) {
     // TODO Auto-generated method stub
@@ -301,14 +274,14 @@ public class WootzSettingsProxy extends WootzSettings {
   public void setGeolocationDatabasePath(String databasePath) {
     // TODO Auto-generated method stub
   }
-  @Override
-  public void setAppCacheEnabled(boolean flag) {
-    web_.setAppCacheEnabled(flag);
-  }
-  @Override
-  public void setAppCachePath(String appCachePath) {
-    web_.setAppCachePath(appCachePath);
-  }
+  // @Override
+  // public void setAppCacheEnabled(boolean flag) {
+  //   web_.setAppCacheEnabled(flag);
+  // }
+  // @Override
+  // public void setAppCachePath(String appCachePath) {
+  //   web_.setAppCachePath(appCachePath);
+  // }
   @Override
   public void setAppCacheMaxSize(long appCacheMaxSize) {
     // TODO Auto-generated method stub

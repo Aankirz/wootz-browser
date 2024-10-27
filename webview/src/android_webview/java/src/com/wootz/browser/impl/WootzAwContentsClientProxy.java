@@ -5,6 +5,8 @@ import org.chromium.android_webview.AwHttpAuthHandler;
 import org.chromium.android_webview.InterceptedRequestData;
 import org.chromium.android_webview.JsPromptResultReceiver;
 import org.chromium.android_webview.JsResultReceiver;
+import org.chromium.android_webview.AwRenderProcess;
+import org.chromium.android_webview.AwRenderProcessGoneDetail;
 
 import com.wootz.browser.WootzJsResult;
 import com.wootz.browser.WootzView;
@@ -25,6 +27,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.GeolocationPermissions.Callback;
 import android.webkit.WebChromeClient.CustomViewCallback;
 import android.webkit.WebView.FindListener;
+import android.webkit.WebChromeClient;
 
 /** Glue that passes calls from the Chromium view to a WebWootzClient. */
 public class WootzAwContentsClientProxy extends AwContentsClient {
@@ -79,6 +82,17 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
     view_ = WootzView;
     viewClient_ = null;
     webClient_ = null;
+  }
+
+  @Override
+  public boolean onRenderProcessGone(AwRenderProcessGoneDetail detail) {
+        if (detail.didCrash()) {
+            // Handle the renderer crash
+            return false; // Return false to destroy the WebView
+        } else {
+            // Handle the case where the renderer was killed by the system without crashing
+            return true; // Return true to attempt recovery
+        }
   }
 
   @Override
@@ -160,13 +174,31 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
       webClient_.onReceivedTouchIconUrl(view_, url, precomposed);
   }
   @Override
-  public void onShowCustomView(View view, int requestedOrientation,
-      CustomViewCallback callback) {
-    if (webClient_ != null) {
-      webClient_.onShowCustomView(view_, requestedOrientation,
-          callback);
-    }
+  public void onShowCustomView(View view, AwContentsClient.CustomViewCallback callback) {
+      if (webClient_ != null) {
+          // Convert AwContentsClient.CustomViewCallback to WebChromeClient.CustomViewCallback
+          WebChromeClient.CustomViewCallback webChromeCallback = new WebChromeClient.CustomViewCallback() {
+              @Override
+              public void onCustomViewHidden() {
+                  // Delegate to the AwContentsClient's callback
+                  callback.onCustomViewHidden();
+              }
+          };
+          
+          // Pass the custom view and the callback to the web client
+          webClient_.onShowCustomView(view, webChromeCallback);
+      }
   }
+  
+  public void super_scrollTo(int x, int y) {
+    view_.scrollTo(x, y);
+  }
+  @Override
+  public void onRendererUnresponsive(AwRenderProcess renderProcess) {
+    // Handle when the renderer becomes unresponsive
+    // You can implement logic like notifying the user or attempting recovery.
+  }
+
   @Override
   protected boolean onCreateWindow(boolean isDialog, boolean isUserGesture) {
     if (webClient_ != null) {
@@ -190,7 +222,6 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
     if (webClient_ != null)
       webClient_.onCloseWindow(view_);
   }
-  @Override
   public void onGeolocationPermissionsShowPrompt(String origin,
       Callback callback) {
     if (webClient_ != null) {
@@ -204,7 +235,6 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
     if (webClient_ != null)
       webClient_.onGeolocationPermissionsHidePrompt();
   }
-  @Override
   public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
     if (webClient_ != null) {
       return webClient_.onConsoleMessage(consoleMessage);
@@ -220,7 +250,6 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
       return null;
     }
   }
-  @Override
   public void getVisitedHistory(ValueCallback<String[]> callback) {
     if (webClient_ != null) {
       webClient_.getVisitedHistory(callback);
@@ -251,7 +280,6 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
     if (viewClient_ != null)
       viewClient_.onLoadResource(view_, url);
   }
-  @Override
   public InterceptedRequestData shouldInterceptRequest(String url) {
     if (viewClient_ != null) {
       WebResourceResponse response =
@@ -264,12 +292,20 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
     return null;
   }
   @Override
-  public void onReceivedError(int errorCode, String description,
-      String failingUrl) {
+  public void onReceivedError(AwWebResourceRequest request, AwWebResourceError error) {
     if (viewClient_ != null) {
-      viewClient_.onReceivedError(view_, errorCode, description, failingUrl);
+        viewClient_.onReceivedError(view_, error.errorCode, error.description, request.url);
     }
   }
+  
+  @Override
+  public void onPageCommitVisible(String url) {
+      if (viewClient_ != null) {
+          viewClient_.onPageCommitVisible(view_, url);
+      }
+  }
+  
+
   @Override
   public void onFormResubmission(Message dontResend, Message resend) {
     if (viewClient_ != null) {
@@ -283,7 +319,6 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
      if (viewClient_ != null)
        viewClient_.doUpdateVisitedHistory(view_, url, isReload);
   }
-  @Override
   public void onReceivedSslError(ValueCallback<Boolean> callback,
       SslError error) {
     if (viewClient_ != null) {
@@ -311,6 +346,13 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
     if (viewClient_ != null)
       viewClient_.onUnhandledKeyEvent(view_, event);
   }
+
+  @Override
+  public void onRendererResponsive(AwRenderProcess renderProcess) {
+      // Handle when the renderer becomes responsive again
+      // For now, you can leave it empty or add some custom logic based on your requirements
+  }  
+
   @Override
   public void onScaleChangedScaled(float oldScale, float newScale) {
     if (viewClient_ != null)
@@ -332,7 +374,6 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
       return false;
     }
   }
-  @Override
   public boolean shouldOverrideUrlLoading(String url) {
     if (viewClient_ != null) {
       return viewClient_.shouldOverrideUrlLoading(view_, url);
@@ -367,4 +408,5 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
   public void onNewPicture(Picture picture) {
     return;
   }
+
 }

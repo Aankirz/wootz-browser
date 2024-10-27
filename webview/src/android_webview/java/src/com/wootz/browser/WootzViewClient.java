@@ -59,6 +59,15 @@ public class WootzViewClient {
   public void onPageFinished(WootzView view, String url) {
   }
 
+ /**
+  * Notify the host application that the page is visible to the user.
+  *
+  * @param view The WootzView that is initiating the callback.
+  * @param url The url of the page.
+  */
+  public void onPageCommitVisible(WootzView view, String url) {
+  }
+
   /**
    * Notify the host application that the WootzView will load the resource
    * specified by the given url.

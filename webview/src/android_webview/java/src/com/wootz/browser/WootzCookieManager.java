@@ -62,14 +62,14 @@ public class WootzCookieManager {
    * Removes all session cookies, which are cookies without an expiration date.
    */
   public void removeSessionCookie() {
-    awCookieManager_.removeSessionCookie();
+    awCookieManager_.removeSessionCookies();
   }
 
   /**
    * Removes all cookies.
    */
   public void removeAllCookie() {
-    awCookieManager_.removeAllCookie();
+    awCookieManager_.removeAllCookies();
   }
 
   /**
@@ -85,7 +85,7 @@ public class WootzCookieManager {
    * Removes all expired cookies.
    */
   public void removeExpiredCookie() {
-    awCookieManager_.removeExpiredCookie();
+    awCookieManager_.removeExpiredCookies();
   }
 
   /**
