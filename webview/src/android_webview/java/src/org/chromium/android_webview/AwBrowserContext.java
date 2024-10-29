@@ -15,7 +15,7 @@ import androidx.annotation.VisibleForTesting;
 import org.jni_zero.CalledByNative;
 import org.jni_zero.JNINamespace;
 import org.jni_zero.NativeMethods;
-
+import org.chromium.android_webview.AwBrowserContext.MediaIntegrityProviderKey;
 import org.chromium.android_webview.common.Lifetime;
 import org.chromium.android_webview.common.MediaIntegrityApiStatus;
 import org.chromium.android_webview.common.MediaIntegrityProvider;
@@ -92,7 +92,8 @@ public class AwBrowserContext implements BrowserContextHandle {
     @NonNull private final AwCookieManager mCookieManager;
     private final boolean mIsDefault;
     @NonNull private final SharedPreferences mSharedPreferences;
-
+    private AwFormDatabase mFormDatabase;
+    
     /**
      * Cache key for MediaIntegrityProviders. Ensures that values are keyed by
      *
@@ -222,6 +223,13 @@ public class AwBrowserContext implements BrowserContextHandle {
 
     public AwCookieManager getCookieManager() {
         return mCookieManager;
+    }
+
+    public AwFormDatabase getFormDatabase() {
+     if (mFormDatabase == null) {
+            mFormDatabase = new AwFormDatabase();
+        }
+        return mFormDatabase;
     }
 
     public AwGeolocationPermissions getGeolocationPermissions() {

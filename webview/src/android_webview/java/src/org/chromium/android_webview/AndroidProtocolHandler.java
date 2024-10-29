@@ -18,6 +18,7 @@ import org.jni_zero.NativeMethods;
 
 import org.chromium.android_webview.common.Lifetime;
 import org.chromium.base.ContextUtils;
+import org.chromium.base.CalledByNativeUnchecked;
 import org.chromium.url.GURL;
 
 import java.io.IOException;

@@ -10,6 +10,8 @@ import android.webkit.JsPromptResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient.CustomViewCallback;
 import android.webkit.WebStorage;
+import org.chromium.android_webview.AwConsoleMessage;
+
 
 /**
  * WootzView equivalent of WebWootzClient.
@@ -304,7 +306,7 @@ public class WootzWebClient {
    * @param consoleMessage Object containing details of the console message.
    * @return true if the message is handled by the client.
    */
-  public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+  public boolean onConsoleMessage(AwConsoleMessage consoleMessage) {
       // Call the old version of this function for backwards compatability.
       onConsoleMessage(consoleMessage.message(), consoleMessage.lineNumber(),
               consoleMessage.sourceId());

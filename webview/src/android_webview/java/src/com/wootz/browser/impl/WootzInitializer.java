@@ -1,5 +1,6 @@
 package com.wootz.browser.impl;
 
+import org.chromium.android_webview.R;
 import org.chromium.android_webview.AwBrowserProcess;
 import org.chromium.android_webview.AwResource;
 import org.chromium.content.browser.ResourceExtractor;
@@ -32,11 +33,11 @@ public class WootzInitializer {
 
     AwResource.setResources(context.getResources());
 
-    AwResource.RAW_LOAD_ERROR = com.wootz.browser.R.raw.blank_html;
-    AwResource.RAW_NO_DOMAIN = com.wootz.browser.R.raw.blank_html;
+    AwResource.RAW_LOAD_ERROR = R.raw.blank_html;
+    AwResource.RAW_NO_DOMAIN = R.raw.blank_html;
 
     AwResource.STRING_DEFAULT_TEXT_ENCODING =
-        com.wootz.browser.R.string.default_encoding;
+        R.string.default_encoding;
 
     // Initialization lifted from
     //     chromium/src/android_webview/test/shell/src/org/chromium/android_webview/shell/AwShellApplication

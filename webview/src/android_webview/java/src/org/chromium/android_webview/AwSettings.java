@@ -15,6 +15,7 @@ import android.os.Message;
 import android.os.Process;
 import android.provider.Settings;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.PluginState;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -93,6 +94,7 @@ public class AwSettings {
     @ForceDarkMode private int mForceDarkMode = ForceDarkMode.FORCE_DARK_AUTO;
 
     private boolean mAlgorithmicDarkeningAllowed;
+    private PluginState mPluginState = PluginState.OFF;
 
     public static final int FORCE_DARK_ONLY = ForceDarkBehavior.FORCE_DARK_ONLY;
     public static final int MEDIA_QUERY_ONLY = ForceDarkBehavior.MEDIA_QUERY_ONLY;
@@ -597,6 +599,55 @@ public class AwSettings {
     public boolean getAllowFileAccess() {
         synchronized (mAwSettingsLock) {
             return mAllowFileUrlAccess;
+        }
+    }
+
+    /**
+     * See {@link android.webkit.WebSettings#setPluginsEnabled}.
+     */
+    @Deprecated
+    public void setPluginsEnabled(boolean flag) {
+        setPluginState(flag ? PluginState.ON : PluginState.OFF);
+    }
+
+    /**
+     * See {@link android.webkit.WebSettings#setPluginState}.
+     */
+    public void setPluginState(PluginState state) {
+        synchronized (mAwSettingsLock) {
+            if (mPluginState != state) {
+                mPluginState = state;
+                mEventHandler.updateWebkitPreferencesLocked();
+            }
+        }
+    }
+
+    /**
+     * See {@link android.webkit.WebSettings#getPluginsEnabled}.
+     */
+    @Deprecated
+    public boolean getPluginsEnabled() {
+        synchronized (mAwSettingsLock) {
+            return mPluginState == PluginState.ON;
+        }
+    }
+
+    /**
+     * Return true if plugins are disabled.
+     * @return True if plugins are disabled.
+     * @hide
+     */
+    @CalledByNative
+    private boolean getPluginsDisabledLocked() {
+        return mPluginState == PluginState.OFF;
+    }
+
+    /**
+     * See {@link android.webkit.WebSettings#getPluginState}.
+     */
+    public PluginState getPluginState() {
+        synchronized (mAwSettingsLock) {
+            return mPluginState;
         }
     }
 

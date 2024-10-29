@@ -108,6 +108,8 @@ import org.chromium.components.stylus_handwriting.StylusWritingSettingsState;
 import org.chromium.components.url_formatter.UrlFormatter;
 import org.chromium.components.viz.common.VizFeatures;
 import org.chromium.components.zoom.ZoomConstants;
+import org.chromium.content.browser.ContentSettings;
+import org.chromium.content.browser.ContentViewCore;
 import org.chromium.content_public.browser.ChildProcessImportance;
 import org.chromium.content_public.browser.ContentViewStatics;
 import org.chromium.content_public.browser.GestureListenerManager;
@@ -403,6 +405,7 @@ public class AwContents implements SmartClipProvider {
     private long mNativeAwContents;
     private AwBrowserContext mBrowserContext;
     private ViewGroup mContainerView;
+    private ContentViewCore mContentViewCore;
     private AwFunctor mDrawFunctor;
     private final Context mContext;
     private final int mAppTargetSdkVersion;
@@ -2841,6 +2844,10 @@ public class AwContents implements SmartClipProvider {
 
     public AwZoomControls getZoomControlsForTest() {
         return mZoomControls;
+    }
+
+    public ContentSettings getContentSettings() {
+        return mContentViewCore.getContentSettings();
     }
 
     /** @see View#setOverScrollMode(int) */

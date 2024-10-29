@@ -301,7 +301,7 @@ public class ResourceExtractor {
     }
 
     public static File getOutputDirFromContext(Context context) {
-        return new File(PathUtils.getDataDirectory(context.getApplicationContext()), "paks");
+        return new File(PathUtils.getDataDirectory(), "paks");
     }
 
     public static void deleteFiles(Context context) {

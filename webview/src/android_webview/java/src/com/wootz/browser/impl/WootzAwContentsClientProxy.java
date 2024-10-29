@@ -1,12 +1,20 @@
 package com.wootz.browser.impl;
 
+import org.chromium.android_webview.AwConsoleMessage;
 import org.chromium.android_webview.AwContentsClient;
+import org.chromium.android_webview.AwContentsClientBridge.ClientCertificateRequestCallback;
 import org.chromium.android_webview.AwHttpAuthHandler;
 import org.chromium.android_webview.InterceptedRequestData;
 import org.chromium.android_webview.JsPromptResultReceiver;
 import org.chromium.android_webview.JsResultReceiver;
 import org.chromium.android_webview.AwRenderProcess;
 import org.chromium.android_webview.AwRenderProcessGoneDetail;
+import org.chromium.android_webview.permission.AwPermissionRequest;
+import org.chromium.android_webview.AwGeolocationPermissions;
+import org.chromium.android_webview.safe_browsing.AwSafeBrowsingResponse;
+import org.chromium.android_webview.SafeBrowsingAction;
+import org.chromium.base.Callback;
+import org.chromium.components.embedder_support.util.WebResourceResponseInfo;
 
 import com.wootz.browser.WootzJsResult;
 import com.wootz.browser.WootzView;
@@ -18,16 +26,18 @@ import android.graphics.Picture;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Message;
+import android.util.Log; 
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.DownloadListener;
+import android.widget.Toast;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceResponse;
-import android.webkit.GeolocationPermissions.Callback;
 import android.webkit.WebChromeClient.CustomViewCallback;
 import android.webkit.WebView.FindListener;
 import android.webkit.WebChromeClient;
+import java.security.Principal;
 
 /** Glue that passes calls from the Chromium view to a WebWootzClient. */
 public class WootzAwContentsClientProxy extends AwContentsClient {
@@ -63,6 +73,51 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
     webClient_ = WootzWebClient;
   }
 
+  @Override
+  public void onReceivedHttpError(AwWebResourceRequest request, WebResourceResponseInfo response) {
+    Log.e("WootzViewClient", "HTTP error received for URL");
+  }
+
+  @Override
+  public void onPermissionRequestCanceled(AwPermissionRequest awPermissionRequest) {
+      // Log the event
+      Log.i("WootzAwContentsClientProxy", "Permission request canceled for: " + awPermissionRequest.getOrigin());
+  
+      // Custom handling, for example, showing a message to the user
+      if (view_ != null) {
+          view_.post(new Runnable() {
+              @Override
+              public void run() {
+                  Toast.makeText(view_.getContext(), "Permission request canceled: " + awPermissionRequest.getOrigin(), Toast.LENGTH_LONG).show();
+              }
+          });
+      }
+  
+      // Additional custom handling logic can be added here, e.g., reset UI elements or take further actions
+  }  
+
+  @Override
+  public void onPermissionRequest(AwPermissionRequest awPermissionRequest) {
+      // Example: Grant all permissions
+      awPermissionRequest.grant();
+  }
+
+  @Override
+  public void onSafeBrowsingHit(AwWebResourceRequest request, int threatType, org.chromium.base.Callback<AwSafeBrowsingResponse> callback) {
+      // Create a new response indicating that the user should proceed and enable reporting
+          // Example of creating a Safe Browsing response
+      AwSafeBrowsingResponse response = new AwSafeBrowsingResponse(
+            SafeBrowsingAction.SHOW_INTERSTITIAL,  // This is the action taken, for example proceeding with page load
+   true             // Enable reporting of the Safe Browsing hit
+      );
+
+  
+      // Provide the response to the callback
+      callback.onResult(response);
+  }
+  
+  
+  
   /** Resets the DownloadListener proxy target. */
   public void setDownloadListener(DownloadListener downloadListener) {
     downloadListener_ = downloadListener;
@@ -222,20 +277,56 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
     if (webClient_ != null)
       webClient_.onCloseWindow(view_);
   }
-  public void onGeolocationPermissionsShowPrompt(String origin,
-      Callback callback) {
-    if (webClient_ != null) {
-      webClient_.onGeolocationPermissionsShowPrompt(origin, callback);
-    } else {
-      callback.invoke(origin, false, false);
-    }
+
+  @Override
+  public void onGeolocationPermissionsShowPrompt(String origin, AwGeolocationPermissions.Callback callback) {
+      if (webClient_ != null) {
+          webClient_.onGeolocationPermissionsShowPrompt(origin, new android.webkit.GeolocationPermissions.Callback() {
+              @Override
+              public void invoke(String origin, boolean allow, boolean retain) {
+                  // Pass the values from AwGeolocationPermissions.Callback to android.webkit.GeolocationPermissions.Callback
+                  callback.invoke(origin, allow, retain);
+              }
+          });
+      } else {
+          // Handle the case where the callback is directly invoked
+          callback.invoke(origin, true, false); // Grant geolocation permissions
+      }
   }
+  
+
+  @Override
+  public void showFileChooser(Callback<String[]> uploadFilePathsCallback, FileChooserParamsImpl fileChooserParams) {
+      // You can handle the file chooser request here.
+      // For example, to simulate a file selection you can directly call the callback:
+      
+      String[] fakeFilePaths = new String[]{"file:///fake/path/image.jpg"}; // Replace with actual file handling logic
+      uploadFilePathsCallback.onResult(fakeFilePaths);
+  
+      // You can also implement more complex logic to open a real file chooser.
+  }
+  @Override
+  public void onReceivedClientCertRequest(
+      ClientCertificateRequestCallback callback, 
+      String[] keyTypes, 
+      Principal[] principals, 
+      String host, 
+      int port) {
+      
+      // Handle the client certificate request here.
+      // For now, rejecting the request:
+      callback.cancel();
+      
+      // If you want to accept, you would instead call:
+      // callback.proceed(privateKey, certificateChain);
+  }
+  
   @Override
   public void onGeolocationPermissionsHidePrompt() {
     if (webClient_ != null)
       webClient_.onGeolocationPermissionsHidePrompt();
   }
-  public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+  public boolean onConsoleMessage(AwConsoleMessage consoleMessage) {
     if (webClient_ != null) {
       return webClient_.onConsoleMessage(consoleMessage);
     } else {
@@ -280,17 +371,38 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
     if (viewClient_ != null)
       viewClient_.onLoadResource(view_, url);
   }
-  public InterceptedRequestData shouldInterceptRequest(String url) {
-    if (viewClient_ != null) {
-      WebResourceResponse response =
-          viewClient_.shouldInterceptRequest(view_, url);
-      if (response != null) {
-        return new InterceptedRequestData(response.getMimeType(),
-            response.getEncoding(), response.getData());
+  @Override
+  public WebResourceResponseInfo shouldInterceptRequest(AwWebResourceRequest request) {
+      if (viewClient_ != null) {
+          WebResourceResponse response = viewClient_.shouldInterceptRequest(view_, request.url.toString());
+          if (response != null) {
+              // Convert WebResourceResponse to WebResourceResponseInfo
+              return new WebResourceResponseInfo(
+                  response.getMimeType(),
+                  response.getEncoding(),
+                  response.getData()
+              );
+          }
       }
-    }
-    return null;
+      return null; // Return null to allow the request to proceed normally
+  }  
+  @Override
+  public void getVisitedHistory(Callback<String[]> callback) {
+      if (webClient_ != null) {
+          // Delegate the call to the WootzWebClient's getVisitedHistory method
+          webClient_.getVisitedHistory(new ValueCallback<String[]>() {
+              @Override
+              public void onReceiveValue(String[] value) {
+                  // Pass the visited history result to the provided callback
+                  callback.onResult(value);
+              }
+          });
+      } else {
+          // If the webClient_ is not set, return an empty history
+          callback.onResult(new String[] {});
+      }
   }
+  
   @Override
   public void onReceivedError(AwWebResourceRequest request, AwWebResourceError error) {
     if (viewClient_ != null) {
@@ -319,16 +431,31 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
      if (viewClient_ != null)
        viewClient_.doUpdateVisitedHistory(view_, url, isReload);
   }
-  public void onReceivedSslError(ValueCallback<Boolean> callback,
-      SslError error) {
-    if (viewClient_ != null) {
-      WootzSslErrorHandlerProxy handler =
-          new WootzSslErrorHandlerProxy(callback);
-      viewClient_.onReceivedSslError(view_, handler, error);
-    } else {
-      callback.onReceiveValue(false);
-    }
+  @Override
+  public void onReceivedSslError(Callback<Boolean> callback, SslError error) {
+      if (viewClient_ != null) {
+          // Use a lambda to convert Callback to ValueCallback
+          ValueCallback<Boolean> valueCallback = result -> callback.onResult(result);
+          WootzSslErrorHandlerProxy handler = new WootzSslErrorHandlerProxy(valueCallback);
+          viewClient_.onReceivedSslError(view_, handler, error);
+      } else {
+          // If viewClient_ is not set, reject the SSL error by passing `false`
+          callback.onResult(false);
+      }
   }
+  
+
+  @Override
+  public boolean shouldOverrideUrlLoading(AwWebResourceRequest request) {
+      // If viewClient_ is available, delegate the URL handling to it
+      if (viewClient_ != null) {
+          return viewClient_.shouldOverrideUrlLoading(view_, request.url.toString());
+      }
+      
+      // If not handled, return false to allow default behavior
+      return false;
+  }
+  
   @Override
   public void onReceivedHttpAuthRequest(AwHttpAuthHandler handler,
       String host, String realm) {

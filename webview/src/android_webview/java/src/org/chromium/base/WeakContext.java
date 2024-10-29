@@ -4,6 +4,7 @@
 
 package org.chromium.base;
 
+import org.chromium.base.ThreadUtils;
 import android.content.Context;
 
 import java.lang.ref.WeakReference;
@@ -35,11 +36,18 @@ public class WeakContext {
         if (ThreadUtils.runningOnUiThread()) {
             return context.getSystemService(name);
         }
-        return ThreadUtils.runOnUiThreadBlockingNoException(new Callable<Object>() {
-          @Override
-          public Object call() {
-            return context.getSystemService(name);
-          }
-        });
+        try {
+            return ThreadUtils.runOnUiThreadBlocking(new Callable<Object>() {
+                @Override
+                public Object call() {
+                    return context.getSystemService(name);
+                }
+            });
+        } catch (Exception e) {
+            // Handle the exception or log it
+            e.printStackTrace();
+            return null;
+        }
     }
+    
 }

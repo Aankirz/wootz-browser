@@ -24,7 +24,7 @@ public class WootzSettingsProxy extends WootzSettings {
 
   public WootzSettingsProxy(AwContents awContents) {
     awContents_ = awContents;
-    contents_ = awContents_.getSettings();
+    contents_ = awContents_.getContentSettings();
     web_ = awContents_.getSettings();
   }
 
@@ -137,8 +137,7 @@ public class WootzSettingsProxy extends WootzSettings {
   }
   @Override
   public void setLayoutAlgorithm(LayoutAlgorithm l) {
-    AwSettings.LayoutAlgorithm algorithm = AwSettings.LayoutAlgorithm.NORMAL;
-    web_.setLayoutAlgorithm(algorithm);
+    web_.setLayoutAlgorithm(AwSettings.LAYOUT_ALGORITHM_NORMAL);
   }
   @Override
   public LayoutAlgorithm getLayoutAlgorithm() {

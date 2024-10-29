@@ -15,7 +15,7 @@ import android.os.PowerManager;
 import org.jni_zero.CalledByNative;
 import org.jni_zero.JNINamespace;
 import org.jni_zero.NativeMethods;
-
+import org.chromium.base.PowerMonitor.PowerStatus;
 import org.chromium.base.power_monitor.BatteryPowerStatus;
 import org.chromium.base.task.PostTask;
 import org.chromium.base.task.TaskTraits;
@@ -56,6 +56,11 @@ public class PowerMonitor {
             createInternal();
         }
     }
+
+    public static void notifyBatteryChargingStatus(boolean isCharging) {
+    onBatteryChargingChanged(isCharging);
+    }
+
 
     private static void createInternal() {
         Context context = ContextUtils.getApplicationContext();
@@ -106,7 +111,7 @@ public class PowerMonitor {
     }
 
     private PowerMonitor() {}
-
+   
     private static void onBatteryChargingChanged(boolean isBatteryPower) {
         ThreadUtils.assertOnUiThread();
         // We can't allow for updating battery status without requesting initialization.

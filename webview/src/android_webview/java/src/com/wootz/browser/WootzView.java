@@ -1098,7 +1098,6 @@ public class WootzView extends FrameLayout {
       return super.awakenScrollBars(startDelay, invalidate);
     }
   }
-
   private class WootzInternalAcccessAdapter implements AwContents.InternalAccessDelegate {
     public boolean drawChild(Canvas canvas, View child, long drawingTime) {
         return WootzView.this.drawChild(canvas, child, drawingTime);
@@ -1166,6 +1165,25 @@ public class WootzView extends FrameLayout {
         }
         return false;
     }
- }
 
+    @Override
+    public void super_scrollTo(int scrollX, int scrollY) {
+        WootzView.super.scrollTo(scrollX, scrollY);
+    }
+
+    @Override
+    public void overScrollBy(
+            int deltaX,
+            int deltaY,
+            int scrollX,
+            int scrollY,
+            int scrollRangeX,
+            int scrollRangeY,
+            int maxOverScrollX,
+            int maxOverScrollY,
+            boolean isTouchEvent) {
+        WootzView.this.scrollTo(scrollX + deltaX, scrollY + deltaY);
+    }
+  }
+  
 }
