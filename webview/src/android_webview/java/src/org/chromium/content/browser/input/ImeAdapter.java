@@ -103,7 +103,7 @@ public class ImeAdapter {
     private AdapterInputConnection mInputConnection;
     private final ViewEmbedder mViewEmbedder;
     private final Handler mHandler;
-    private DelayedDismissInput mDismissInput = null;
+    private DelayedDismissInput mDismissInput;
     private final SelectionHandleController mSelectionHandleController;
     private final InsertionHandleController mInsertionHandleController;
     private int mTextInputType;
@@ -111,7 +111,7 @@ public class ImeAdapter {
     private int mInitialSelectionEnd;
 
     @VisibleForTesting
-    boolean mIsShowWithoutHideOutstanding = false;
+    boolean mIsShowWithoutHideOutstanding;
 
     /**
      * @param context View context.

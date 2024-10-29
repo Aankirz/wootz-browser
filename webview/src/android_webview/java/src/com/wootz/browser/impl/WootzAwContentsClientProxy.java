@@ -387,6 +387,11 @@ public class WootzAwContentsClientProxy extends AwContentsClient {
       return null; // Return null to allow the request to proceed normally
   }  
   @Override
+  public boolean hasWebViewClient() {
+      // Check if the WootzViewClient (equivalent of WebViewClient) is set
+      return viewClient_ != null;
+  }
+  @Override
   public void getVisitedHistory(Callback<String[]> callback) {
       if (webClient_ != null) {
           // Delegate the call to the WootzWebClient's getVisitedHistory method

@@ -18,7 +18,8 @@ public abstract class SelectionHandleController implements CursorController {
     private static final int TEXT_DIRECTION_RTL = 2;
 
     /** The cursor controller images, lazily created when shown. */
-    private HandleView mStartHandle, mEndHandle;
+    private HandleView mStartHandle;
+    private HandleView mEndHandle;
 
     /** Whether handles should show automatically when text is selected. */
     private boolean mAllowAutomaticShowing = true;

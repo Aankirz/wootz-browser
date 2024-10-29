@@ -91,9 +91,17 @@ public class AwSettings {
     public static final int FORCE_DARK_ON = ForceDarkMode.FORCE_DARK_ON;
     public static final int FORCE_DARK_MODES_COUNT = 3;
 
+    private static final Object sGlobalContentSettingsLock = new Object();
+    
+    // For compatibility with the legacy WebView, we can only enable AppCache when the path is
+    // provided. However, we don't use the path, so we just check if we have received it from the
+    // client.
+    private static boolean sAppCachePathIsSet;
+
     @ForceDarkMode private int mForceDarkMode = ForceDarkMode.FORCE_DARK_AUTO;
 
     private boolean mAlgorithmicDarkeningAllowed;
+    private boolean mAppCacheEnabled;
     private PluginState mPluginState = PluginState.OFF;
 
     public static final int FORCE_DARK_ONLY = ForceDarkBehavior.FORCE_DARK_ONLY;
@@ -151,6 +159,7 @@ public class AwSettings {
     private String mUserAgent;
     private AwUserAgentMetadata mAwUserAgentMetadata;
     private boolean mHasUserAgentMetadataOverrides;
+    private boolean mAutoCompleteEnabled = true;
     private int mMinimumFontSize = 8;
     private int mMinimumLogicalFontSize = 8;
     private int mDefaultFontSize = 16;
@@ -621,7 +630,7 @@ public class AwSettings {
             }
         }
     }
-
+    
     /**
      * See {@link android.webkit.WebSettings#getPluginsEnabled}.
      */
@@ -633,16 +642,6 @@ public class AwSettings {
     }
 
     /**
-     * Return true if plugins are disabled.
-     * @return True if plugins are disabled.
-     * @hide
-     */
-    @CalledByNative
-    private boolean getPluginsDisabledLocked() {
-        return mPluginState == PluginState.OFF;
-    }
-
-    /**
      * See {@link android.webkit.WebSettings#getPluginState}.
      */
     public PluginState getPluginState() {
@@ -650,6 +649,36 @@ public class AwSettings {
             return mPluginState;
         }
     }
+    /**
+     * See {@link android.webkit.WebSettings#setSaveFormData}.
+     */
+    public void setSaveFormData(final boolean enable) {
+        synchronized (mAwSettingsLock) {
+            if (mAutoCompleteEnabled != enable) {
+                mAutoCompleteEnabled = enable;
+                ThreadUtils.runOnUiThreadBlocking(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mNativeAwSettings != 0) {
+                            Log.i("AwSettings", "Form data preferences updated: AutoCompleteEnabled = " + mAutoCompleteEnabled);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+
+    public boolean getSaveFormData() {
+        synchronized (mAwSettingsLock) {
+            return getSaveFormDataLocked();
+        }
+    }
+
+    private boolean getSaveFormDataLocked() {
+        return mAutoCompleteEnabled;
+    }
+
 
     /** See {@link android.webkit.WebSettings#setAllowContentAccess}. */
     public void setAllowContentAccess(boolean allow) {
@@ -2228,6 +2257,34 @@ public class AwSettings {
         }
     }
 
+    public void setAppCacheEnabled(boolean flag) {
+        synchronized (mAwSettingsLock) {
+            if (mAppCacheEnabled != flag) {
+                mAppCacheEnabled = flag;
+                mEventHandler.updateWebkitPreferencesLocked();
+            }
+        }
+    }
+
+    public void setAppCachePath(String path) {
+        boolean needToSync = false;
+        synchronized (sGlobalContentSettingsLock) {
+            // AppCachePath can only be set once.
+            if (!sAppCachePathIsSet && path != null && !path.isEmpty()) {
+                sAppCachePathIsSet = true;
+                needToSync = true;
+            }
+        }
+        // The obvious problem here is that other WebViews will not be updated,
+        // until they execute synchronization from Java to the native side.
+        // But this is the same behaviour as it was in the legacy WebView.
+        if (needToSync) {
+            synchronized (mAwSettingsLock) {
+                mEventHandler.updateWebkitPreferencesLocked();
+            }
+        }
+    }
+
     public void setWebViewIntegrityApiStatus(
             @MediaIntegrityApiStatus int defaultStatus,
             Map<String, @MediaIntegrityApiStatus Integer> permissionConfig) {
@@ -2282,6 +2339,7 @@ public class AwSettings {
 
     @NativeMethods
     interface Natives {
+
         long init(AwSettings caller, WebContents webContents);
 
         void destroy(long nativeAwSettings, AwSettings caller);

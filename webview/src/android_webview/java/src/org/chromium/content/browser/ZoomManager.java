@@ -21,10 +21,10 @@ class ZoomManager {
     private class ScaleGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
         // Completely silence scaling events. Used in WebView when zoom support
         // is turned off.
-        private boolean mPermanentlyIgnoreDetectorEvents = false;
+        private boolean mPermanentlyIgnoreDetectorEvents;
         // Bypass events through the detector to maintain its state. Used when
         // renderes already handles the touch event.
-        private boolean mTemporarilyIgnoreDetectorEvents = false;
+        private boolean mTemporarilyIgnoreDetectorEvents;
 
         // Whether any pinch zoom event has been sent to native.
         private boolean mPinchEventSent;
@@ -110,7 +110,7 @@ class ZoomManager {
             mMultiTouchDetector.onTouchEvent(event);
         } catch (Exception e) {
             Log.e(TAG, "ScaleGestureDetector got into a bad state!", e);
-            assert(false);
+            assert false;
         }
     }
 

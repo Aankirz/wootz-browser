@@ -53,7 +53,7 @@ class PopupZoomer extends View {
         public boolean onLongPress(View v, MotionEvent event);
     }
 
-    private OnTapListener mOnTapListener = null;
+    private OnTapListener mOnTapListener;
 
     /**
      * Interface to be implemented to add and remove PopupZoomer to/from the view hierarchy.
@@ -63,7 +63,7 @@ class PopupZoomer extends View {
         public void onPopupZoomerHidden(PopupZoomer zoomer);
     }
 
-    private OnVisibilityChangedListener mOnVisibilityChangedListener = null;
+    private OnVisibilityChangedListener mOnVisibilityChangedListener;
 
     // Cached drawable used to frame the zooming popup.
     // TODO(tonyg): This should be marked purgeable so that if the system wants to recover this
@@ -78,14 +78,14 @@ class PopupZoomer extends View {
     private final Interpolator mShowInterpolator = new OvershootInterpolator();
     private final Interpolator mHideInterpolator = new ReverseInterpolator(mShowInterpolator);
 
-    private boolean mAnimating = false;
-    private boolean mShowing = false;
-    private long mAnimationStartTime = 0;
+    private boolean mAnimating;
+    private boolean mShowing;
+    private long mAnimationStartTime;
 
     // The time that was left for the outwards animation to finish.
     // This is used in the case that the zoomer is cancelled while it is still animating outwards,
     // to avoid having it jump to full size then animate closed.
-    private long mTimeLeft = 0;
+    private long mTimeLeft;
 
     // initDimensions() needs to be called in onDraw().
     private boolean mNeedsToInitDimensions;
@@ -101,7 +101,8 @@ class PopupZoomer extends View {
 
     // How far to shift the canvas after all zooming is done, to keep it inside the bounds of the
     // view (including margin).
-    private float mShiftX = 0, mShiftY = 0;
+    private float mShiftX;
+    private float mShiftY;
     // The magnification factor of the popup. It is recomputed once we have mTargetBounds and
     // mZoomedBitmap.
     private float mScale = 1.0f;
@@ -109,16 +110,22 @@ class PopupZoomer extends View {
     private RectF mClipRect;
     // The extrusion values are how far the zoomed area (mClipRect) extends from the touch point.
     // These values to used to animate the popup.
-    private float mLeftExtrusion, mTopExtrusion, mRightExtrusion, mBottomExtrusion;
+    private float mLeftExtrusion;
+    private float mTopExtrusion;
+    private float mRightExtrusion;
+    private float mBottomExtrusion;
     // The last touch point, where the animation will start from.
     private final PointF mTouch = new PointF();
 
     // Since we sometimes overflow the bounds of the mViewClipRect, we need to allow scrolling.
     // Current scroll position.
-    private float mPopupScrollX, mPopupScrollY;
+    private float mPopupScrollX;
+    private float mPopupScrollY;
     // Scroll bounds.
-    private float mMinScrollX, mMaxScrollX;
-    private float mMinScrollY, mMaxScrollY;
+    private float mMinScrollX;
+    private float mMaxScrollX;
+    private float mMinScrollY;
+    private float mMaxScrollY;
 
     private GestureDetector mGestureDetector;
 

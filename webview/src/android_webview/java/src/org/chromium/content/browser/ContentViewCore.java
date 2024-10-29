@@ -300,9 +300,9 @@ public class ContentViewCore implements MotionEventDelegate, NavigationClient {
     private ContentSettings mContentSettings;
 
     // Native pointer to C++ ContentViewCoreImpl object which will be set by nativeInit().
-    private int mNativeContentViewCore = 0;
+    private int mNativeContentViewCore;
 
-    private boolean mAttachedToWindow = false;
+    private boolean mAttachedToWindow;
 
     private ContentViewGestureHandler mContentViewGestureHandler;
     private PinchGestureStateListener mPinchGestureStateListener;
@@ -311,7 +311,7 @@ public class ContentViewCore implements MotionEventDelegate, NavigationClient {
 
     private PopupZoomer mPopupZoomer;
 
-    private Runnable mFakeMouseMoveRunnable = null;
+    private Runnable mFakeMouseMoveRunnable;
 
     // Only valid when focused on a text / password field.
     private ImeAdapter mImeAdapter;
@@ -355,22 +355,22 @@ public class ContentViewCore implements MotionEventDelegate, NavigationClient {
 
     // Temporary notification to tell onSizeChanged to focus a form element,
     // because the OSK was just brought up.
-    private boolean mUnfocusOnNextSizeChanged = false;
+    private boolean mUnfocusOnNextSizeChanged;
     private final Rect mFocusPreOSKViewportRect = new Rect();
 
     private boolean mNeedUpdateOrientationChanged;
 
     // Used to keep track of whether we should try to undo the last zoom-to-textfield operation.
-    private boolean mScrolledAndZoomedFocusedEditableNode = false;
+    private boolean mScrolledAndZoomedFocusedEditableNode;
 
     // Whether we use hardware-accelerated drawing.
-    private boolean mHardwareAccelerated = false;
+    private boolean mHardwareAccelerated;
 
     // Whether we received a new frame since consumePendingRendererFrame() was last called.
-    private boolean mPendingRendererFrame = false;
+    private boolean mPendingRendererFrame;
 
     // Whether we should animate at the next vsync tick.
-    private boolean mNeedAnimate = false;
+    private boolean mNeedAnimate;
 
     private ViewAndroid mViewAndroid;
 
@@ -1936,7 +1936,6 @@ public class ContentViewCore implements MotionEventDelegate, NavigationClient {
                             mRenderCoordinates.fromLocalCssToPix(AVERAGE_LINE_HEIGHT));
                 }
 
-                @Override
                 public void showHandle() {
                     super.showHandle();
                 }

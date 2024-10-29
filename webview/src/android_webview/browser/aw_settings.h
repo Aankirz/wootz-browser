@@ -175,6 +175,7 @@ class AwSettings : public content::WebContentsObserver {
  private:
   AwRenderViewHostExt* GetAwRenderViewHostExt();
   void UpdateEverything();
+  bool save_form_data_;  // This will store the form data saving preference.
 
   // WebContentsObserver overrides:
   void RenderViewHostChanged(content::RenderViewHost* old_host,

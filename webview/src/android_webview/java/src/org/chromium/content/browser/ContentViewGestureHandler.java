@@ -64,17 +64,17 @@ class ContentViewGestureHandler implements LongPressDelegate {
     private final Deque<MotionEvent> mPendingMotionEvents = new ArrayDeque<MotionEvent>();
 
     // Has WebKit told us the current page requires touch events.
-    private boolean mHasTouchHandlers = false;
+    private boolean mHasTouchHandlers;
 
     // True if the down event for the current gesture was returned back to the browser with
     // INPUT_EVENT_ACK_STATE_NO_CONSUMER_EXISTS
-    private boolean mNoTouchHandlerForGesture = false;
+    private boolean mNoTouchHandlerForGesture;
 
     // True if JavaScript touch event handlers returned an ACK with
     // INPUT_EVENT_ACK_STATE_CONSUMED. In this case we should avoid, sending events from
     // this gesture to the Gesture Detector since it will have already missed at least
     // one event.
-    private boolean mJavaScriptIsConsumingGesture = false;
+    private boolean mJavaScriptIsConsumingGesture;
 
     // Remember whether onShowPress() is called. If it is not, in onSingleTapConfirmed()
     // we will first show the press state, then trigger the click.
@@ -95,14 +95,14 @@ class ContentViewGestureHandler implements LongPressDelegate {
 
     private boolean mSeenFirstScrollEvent;
 
-    private boolean mPinchInProgress = false;
+    private boolean mPinchInProgress;
 
     // Tracks whether a touch cancel event has been sent as a result of switching
     // into scrolling or pinching mode.
-    private boolean mTouchCancelEventSent = false;
+    private boolean mTouchCancelEventSent;
 
     // Last cancelled touch event as a result of scrolling or pinching.
-    private MotionEvent mLastCancelledEvent = null;
+    private MotionEvent mLastCancelledEvent;
 
     private static final int DOUBLE_TAP_TIMEOUT = ViewConfiguration.getDoubleTapTimeout();
 
@@ -112,8 +112,8 @@ class ContentViewGestureHandler implements LongPressDelegate {
 
     // Used to track the last rawX/Y coordinates for moves.  This gives absolute scroll distance.
     // Useful for full screen tracking.
-    private float mLastRawX = 0;
-    private float mLastRawY = 0;
+    private float mLastRawX;
+    private float mLastRawY;
 
     // Cache of square of the scaled touch slop so we don't have to calculate it on every touch.
     private int mScaledTouchSlopSquare;
@@ -123,8 +123,8 @@ class ContentViewGestureHandler implements LongPressDelegate {
 
     // Used to track the accumulated scroll error over time. This is used to remove the
     // rounding error we introduced by passing integers to webkit.
-    private float mAccumulatedScrollErrorX = 0;
-    private float mAccumulatedScrollErrorY = 0;
+    private float mAccumulatedScrollErrorX;
+    private float mAccumulatedScrollErrorY;
 
     // Whether input events are delivered right before vsync.
     private final boolean mInputEventsDeliveredAtVSync;
@@ -269,8 +269,8 @@ class ContentViewGestureHandler implements LongPressDelegate {
                             double epsilon = 1e-3;
                             if (distance > epsilon) {
                                 double ratio = Math.max(0, distance - scaledTouchSlop) / distance;
-                                distanceX *= ratio;
-                                distanceY *= ratio;
+                                distanceX = (float) (distanceX * ratio);
+                                distanceY = (float) (distanceY * ratio);
                             }
                         }
                         mSnapScrollController.updateSnapScrollMode(distanceX, distanceY);
@@ -786,7 +786,7 @@ class ContentViewGestureHandler implements LongPressDelegate {
         switch (ackResult) {
             case INPUT_EVENT_ACK_STATE_UNKNOWN:
                 // This should never get sent.
-                assert(false);
+                assert false;
                 break;
             case INPUT_EVENT_ACK_STATE_CONSUMED:
                 mJavaScriptIsConsumingGesture = true;

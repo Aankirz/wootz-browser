@@ -36,8 +36,8 @@ public class AdapterInputConnection extends BaseInputConnection {
     private final ImeAdapter mImeAdapter;
 
     private boolean mSingleLine;
-    private int mNumNestedBatchEdits = 0;
-    private boolean mIgnoreTextInputStateUpdates = false;
+    private int mNumNestedBatchEdits;
+    private boolean mIgnoreTextInputStateUpdates;
 
     private int mLastUpdateSelectionStart = INVALID_SELECTION;
     private int mLastUpdateSelectionEnd = INVALID_SELECTION;

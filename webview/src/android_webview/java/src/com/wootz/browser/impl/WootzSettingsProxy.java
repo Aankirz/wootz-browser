@@ -37,6 +37,23 @@ public class WootzSettingsProxy extends WootzSettings {
     return web_.supportZoom();
   }
   @Override
+  public void setPluginState(PluginState state) {
+      // Proxy this method to the AwSettings instance
+      web_.setPluginState(state);
+  }  
+  @Override
+  public void setAppCachePath(String appCachePath) {
+      // Proxy this method to the AwSettings instance
+      web_.setAppCachePath(appCachePath);
+  }
+  @Override
+  public void setAppCacheEnabled(boolean flag) {
+        // Proxy this method to the AwSettings instance
+        web_.setAppCacheEnabled(flag);
+  }
+
+  
+  @Override
   public void setMediaPlaybackRequiresUserGesture(boolean require) {
     web_.setMediaPlaybackRequiresUserGesture(require);
   }
@@ -84,6 +101,14 @@ public class WootzSettingsProxy extends WootzSettings {
   public boolean getLoadWithOverviewMode() {
     return web_.getLoadWithOverviewMode();
   }
+  @Override
+  public void setSaveFormData(boolean save) {
+      web_.setSaveFormData(save);  // Assuming AwSettings has a setSaveFormData method
+  }
+  @Override
+  public boolean getSaveFormData() {
+      return web_.getSaveFormData();  // This assumes AwSettings has a getSaveFormData method
+  }  
   @Override
   public void setSavePassword(boolean save) {
     // TODO Auto-generated method stub
@@ -273,14 +298,6 @@ public class WootzSettingsProxy extends WootzSettings {
   public void setGeolocationDatabasePath(String databasePath) {
     // TODO Auto-generated method stub
   }
-  // @Override
-  // public void setAppCacheEnabled(boolean flag) {
-  //   web_.setAppCacheEnabled(flag);
-  // }
-  // @Override
-  // public void setAppCachePath(String appCachePath) {
-  //   web_.setAppCachePath(appCachePath);
-  // }
   @Override
   public void setAppCacheMaxSize(long appCacheMaxSize) {
     // TODO Auto-generated method stub

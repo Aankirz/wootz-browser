@@ -4,9 +4,11 @@
 
 package org.chromium.base;
 
+import org.chromium.base.ActivityState;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+
 
 /**
  * Provides information about the current activity's status, and a way

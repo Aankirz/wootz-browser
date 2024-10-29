@@ -13,6 +13,7 @@ import android.media.MediaFormat;
 import android.view.Surface;
 import android.util.Log;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.chromium.base.CalledByNative;
@@ -65,10 +66,15 @@ class MediaCodecBridge {
         @CalledByNative("DequeueOutputResult")
         private int numBytes() { return mNumBytes; }
     }
-
+    
     private MediaCodecBridge(String mime) {
-        mMediaCodec = MediaCodec.createDecoderByType(mime);
-    }
+        try {
+            mMediaCodec = MediaCodec.createDecoderByType(mime);
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to create decoder by type: " + mime, e);
+            mMediaCodec = null; // or handle the error as appropriate
+        }
+    }    
 
     @CalledByNative
     private static MediaCodecBridge create(String mime) {

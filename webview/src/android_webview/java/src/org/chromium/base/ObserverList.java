@@ -30,7 +30,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 @NotThreadSafe
 public class ObserverList<E> implements Iterable<E> {
     public final List<E> mObservers = new ArrayList<E>();
-    private int mIterationDepth = 0;
+    private int mIterationDepth;
 
     public ObserverList() {}
 
@@ -127,8 +127,8 @@ public class ObserverList<E> implements Iterable<E> {
 
     private class ObserverListIterator implements Iterator<E> {
         private final int mListEndMarker;
-        private int mIndex = 0;
-        private boolean mIsExhausted = false;
+        private int mIndex;
+        private boolean mIsExhausted;
 
         private ObserverListIterator() {
             ObserverList.this.incrementIterationDepth();

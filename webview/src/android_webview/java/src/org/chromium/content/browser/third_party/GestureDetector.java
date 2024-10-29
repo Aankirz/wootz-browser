@@ -24,6 +24,8 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
+import javax.swing.text.View;
+
 /*  Commented out in Chromium for NDK compliance
 package android.view;
 */
@@ -168,38 +170,39 @@ public class GestureDetector {
      * nothing and return {@code false} for all applicable methods.
      */
     public static class SimpleOnGestureListener implements OnGestureListener, OnDoubleTapListener {
+        @Override
         public boolean onSingleTapUp(MotionEvent e) {
             return false;
         }
-
+        @Override
         public void onLongPress(MotionEvent e) {
         }
-
+        @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                 float distanceX, float distanceY) {
             return false;
         }
-
+        @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                 float velocityY) {
             return false;
         }
-
+        @Override
         public void onShowPress(MotionEvent e) {
         }
-
+        @Override
         public boolean onDown(MotionEvent e) {
             return false;
         }
-
+        @Override
         public boolean onDoubleTap(MotionEvent e) {
             return false;
         }
-
+        @Override
         public boolean onDoubleTapEvent(MotionEvent e) {
             return false;
         }
-
+        @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             return false;
         }
@@ -394,7 +397,9 @@ public class GestureDetector {
         mIsLongpressEnabled = true;
 
         // Fallback to support pre-donuts releases
-        int touchSlop, doubleTapSlop, doubleTapTouchSlop;
+        int touchSlop;
+        int doubleTapSlop;
+        int doubleTapTouchSlop;
 /*  Commented out in Chromium for NDK compliance
         if (context == null) {
             //noinspection deprecation
@@ -480,7 +485,9 @@ public class GestureDetector {
         final int skipIndex = pointerUp ? ev.getActionIndex() : -1;
 
         // Determine focal point
-        float sumX = 0, sumY = 0;
+        float sumX = 0;
+        float sumY = 0;
+
         final int count = ev.getPointerCount();
         for (int i = 0; i < count; i++) {
             if (skipIndex == i) continue;

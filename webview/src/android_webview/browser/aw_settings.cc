@@ -26,6 +26,7 @@
 #include "base/memory/raw_ptr.h"
 #include "base/metrics/histogram_functions.h"
 #include "base/supports_user_data.h"
+#include "base/logging.h"
 #include "components/embedder_support/user_agent_utils.h"
 #include "components/viz/common/features.h"
 #include "content/public/browser/back_forward_cache.h"
