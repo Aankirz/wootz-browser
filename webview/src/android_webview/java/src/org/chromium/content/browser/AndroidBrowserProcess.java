@@ -9,6 +9,8 @@ import android.content.Context;
 import android.util.Log;
 
 import org.chromium.base.JNINamespace;
+import org.chromium.base.ContextUtils;
+import org.chromium.base.process_launcher.ChildProcessLauncher;
 import org.chromium.content.app.ContentMain;
 import org.chromium.content.app.LibraryLoader;
 import org.chromium.content.common.ProcessInitException;
@@ -98,8 +100,8 @@ public class AndroidBrowserProcess {
 
         nativeSetCommandLineFlags(maxRenderers,
                 nativeIsPluginEnabled() ? getPlugins(context) : null);
-        ContentMain.initApplicationContext(appContext);
-        int result = ContentMain.start();
+                ContextUtils.initApplicationContext(appContext);
+        int result = ContentMain.start(true);
         if (result > 0) throw new ProcessInitException(result);
         return true;
     }

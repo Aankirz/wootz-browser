@@ -12,9 +12,13 @@ import android.os.Looper;
 import org.chromium.base.ContextUtils;
 import org.chromium.base.Log;
 import org.chromium.base.TraceEvent;
+import org.chromium.base.process_launcher.ChildProcessService;
+import org.chromium.base.process_launcher.ChildProcessConnection;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** This class is used to start a child process by connecting to a ChildProcessService. */
 public class ChildProcessLauncher {
@@ -116,6 +120,8 @@ public class ChildProcessLauncher {
      *     communicate with the parent process.
      * @param binderBox an optional binder box the child can use to unpack additional binders
      */
+    public static final int MAX_REGISTERED_SANDBOXED_SERVICES = 6;
+    public static final int MAX_REGISTERED_PRIVILEGED_SERVICES = 3;
     public ChildProcessLauncher(
             Handler launcherHandler,
             Delegate delegate,
@@ -261,6 +267,11 @@ public class ChildProcessLauncher {
                 zygoteInfoCallback);
     }
 
+    // Map from pid to ChildService connection.
+    private static Map<Integer, ChildProcessConnection> mServiceMap =
+            new ConcurrentHashMap<Integer, ChildProcessConnection>();
+
+
     private void onServiceConnected(ChildProcessConnection connection) {
         assert isRunningOnLauncherThread();
         assert mConnection == connection || connection == null;
@@ -308,6 +319,36 @@ public class ChildProcessLauncher {
         if (getPid() != 0) {
             mDelegate.onConnectionLost(mConnection);
         }
+    }
+
+    /**
+     * Bind a child process as a high priority process so that it has the same
+     * priority as the main process. This can be used for the foreground renderer
+     * process to distinguish it from the the background renderer process.
+     *
+     * @param pid The process handle of the service connection obtained from {@link #start}.
+     */
+    public static void bindAsHighPriority(int pid) {
+        ChildProcessConnection connection = mServiceMap.get(pid);
+        if (connection == null) {
+            Log.w(TAG, "Tried to bind a non-existent connection to pid: " + pid);
+            return;
+        }
+        connection.bindHighPriority();
+    }
+
+    /**
+     * Unbind a high priority process which is bound by {@link #bindAsHighPriority}.
+     *
+     * @param pid The process handle of the service obtained from {@link #start}.
+     */
+    public static void unbindAsHighPriority(int pid) {
+        ChildProcessConnection connection = mServiceMap.get(pid);
+        if (connection == null) {
+            Log.w(TAG, "Tried to unbind non-existent connection to pid: " + pid);
+            return;
+        }
+        connection.unbindHighPriority(false);
     }
 
     public void stop() {

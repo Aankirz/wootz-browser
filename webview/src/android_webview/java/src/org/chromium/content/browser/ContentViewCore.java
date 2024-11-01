@@ -39,8 +39,10 @@ import android.widget.FrameLayout;
 import com.google.common.annotations.VisibleForTesting;
 
 import org.chromium.base.CalledByNative;
+import org.chromium.base.Callback;
 import org.chromium.base.JNINamespace;
 import org.chromium.base.WeakContext;
+import org.chromium.base.process_launcher.ChildProcessLauncher;
 import org.chromium.content.R;
 import org.chromium.content.browser.ContentViewGestureHandler.MotionEventDelegate;
 import org.chromium.content.browser.accessibility.AccessibilityInjector;
@@ -51,6 +53,8 @@ import org.chromium.content.browser.input.ImeAdapter.AdapterInputConnectionFacto
 import org.chromium.content.browser.input.InsertionHandleController;
 import org.chromium.content.browser.input.SelectPopupDialog;
 import org.chromium.content.browser.input.SelectionHandleController;
+import org.chromium.content.browser.input.SelectPopupItem;
+import org.chromium.content.browser.input.PopupItemType;
 import org.chromium.content.common.TraceEvent;
 import org.chromium.ui.ViewAndroid;
 import org.chromium.ui.ViewAndroidDelegate;
@@ -58,9 +62,14 @@ import org.chromium.ui.WindowAndroid;
 import org.chromium.ui.gfx.DeviceDisplayInfo;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+
+// import javax.security.auth.callback.Callback;
 
 /**
  * Provides a Java-side 'wrapper' around a WebContent (native) instance.
@@ -91,6 +100,8 @@ public class ContentViewCore implements MotionEventDelegate, NavigationClient {
 
     // Length of the delay (in ms) before fading in handles after the last page movement.
     private static final int TEXT_HANDLE_FADE_IN_DELAY = 300;
+
+    private SelectPopupDialog mSelectPopupDialog;
 
     // If the embedder adds a JavaScript interface object that contains an indirect reference to
     // the ContentViewCore, then storing a strong ref to the interface object on the native
@@ -1359,7 +1370,10 @@ public class ContentViewCore implements MotionEventDelegate, NavigationClient {
     }
 
     private void hidePopupDialog() {
-        SelectPopupDialog.hide(this);
+        if (mSelectPopupDialog != null) {
+            mSelectPopupDialog.hide(true);  // Pass true or false based on your specific requirement
+            mSelectPopupDialog = null;  // Optionally clear the reference
+        }
         hideHandles();
         hideSelectActionBar();
     }
@@ -2254,11 +2268,30 @@ public class ContentViewCore implements MotionEventDelegate, NavigationClient {
      */
     @SuppressWarnings("unused")
     @CalledByNative
-    private void showSelectPopup(String[] items, int[] enabled, boolean multiple,
-            int[] selectedIndices) {
-        SelectPopupDialog.show(this, items, enabled, multiple, selectedIndices);
+    private void showSelectPopup(String[] items, int[] enabled, boolean multiple, int[] selectedIndices) {
+        List<SelectPopupItem> popupItems = new ArrayList<>();
+        for (int i = 0; i < items.length; i++) {
+            // Using PopupItemType.ENABLED as the type for each item; adjust as needed
+            int itemType = (enabled[i] == 1) ? PopupItemType.ENABLED : PopupItemType.DISABLED;
+            popupItems.add(new SelectPopupItem(items[i], itemType));
+        }
+    
+        mSelectPopupDialog = new SelectPopupDialog(
+            mContext,
+            new Callback<int[]>() {
+                @Override
+                public void onResult(int[] indices) {
+                    // Handle the selection result
+                }
+            },
+            popupItems,
+            multiple,
+            selectedIndices
+        );
+    
+        mSelectPopupDialog.show();
     }
-
+    
     @SuppressWarnings("unused")
     @CalledByNative
     private void showDisambiguationPopup(Rect targetRect, Bitmap zoomedBitmap) {

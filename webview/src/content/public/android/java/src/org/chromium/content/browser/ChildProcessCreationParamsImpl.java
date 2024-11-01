@@ -16,7 +16,7 @@ public class ChildProcessCreationParamsImpl {
     private static final String PRIVILEGED_SERVICES_NAME =
             "org.chromium.content.app.PrivilegedProcessService";
     private static final String SANDBOXED_SERVICES_NAME =
-            "org.chromium.content.app.SandboxedProcessService";
+            "org.chromium.content.app.e";
 
     // Members should all be immutable to avoid worrying about thread safety.
     private static String sPackageNameForPrivilegedService;

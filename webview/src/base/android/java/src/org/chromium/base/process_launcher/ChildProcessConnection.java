@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,6 +45,12 @@ public class ChildProcessConnection {
     private static final int FALLBACK_TIMEOUT_IN_SECONDS = 10;
     private static final boolean SUPPORT_NOT_PERCEPTIBLE_BINDING =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+    private final Object mUiThreadLock = new Object();
+    private HighPriorityConnection mHighPriorityConnection = null; 
+    private int mHighPriorityConnectionCount;
+    private final int mServiceNumber = 1;
+    private final Context mContext;
+    private final Class<? extends ChildProcessService> mServiceClass = ChildProcessService.class; 
 
     /**
      * Used to notify the consumer about the process start. These callbacks will be invoked before
@@ -208,6 +215,77 @@ public class ChildProcessConnection {
         return mZygotePid != 0;
     }
 
+     /**
+     * Bind the service with a new high priority connection. This will make the service
+     * as important as the main process.
+     */
+    public void bindHighPriority() {
+        synchronized(mUiThreadLock) {
+            if (mService == null) {
+                Log.w(TAG, "The connection is not bound ");
+                return;
+            }
+            if (mHighPriorityConnection == null) {
+                mHighPriorityConnection = new HighPriorityConnection();
+                mHighPriorityConnection.bind();
+            }
+            mHighPriorityConnectionCount++;
+        }
+    }
+
+    /**
+     * Unbind the service as the high priority connection.
+     */
+    public void unbindHighPriority(boolean force) {
+        synchronized(mUiThreadLock) {
+            if (mService == null) {
+                Log.w(TAG, "The connection is not bound");
+                return;
+            }
+            mHighPriorityConnectionCount--;
+            if (force || (mHighPriorityConnectionCount == 0 && mHighPriorityConnection != null)) {
+                mHighPriorityConnection.unbind();
+                mHighPriorityConnection = null;
+            }
+        }
+    }
+
+    int getServiceNumber() {
+        return mServiceNumber;
+    }
+
+    private Intent createServiceBindIntent() {
+        Intent intent = new Intent();
+        intent.setClassName(mContext, mServiceClass.getName() + mServiceNumber);
+        intent.setPackage(mContext.getPackageName());
+        return intent;
+    }
+
+    private class HighPriorityConnection implements ServiceConnection {
+        private boolean mHBound = false;
+
+        void bind() {
+            final Intent intent = createServiceBindIntent();
+            mHBound = mContext.bindService(intent, this, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
+
+        }
+
+        void unbind() {
+            if (mHBound) {
+                mContext.unbindService(this);
+                mHBound = false;
+            }
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName className) {
+        }
+    }
+
     // Factory which tests can override to intercept ChildServiceConnection creation.
     private final ChildServiceConnectionFactory mConnectionFactory;
 
@@ -307,6 +385,7 @@ public class ChildProcessConnection {
                     mLauncherHandler.post(runnable);
                 };
         assert isRunningOnLauncherThread();
+        this.mContext = context;
         mServiceName = serviceName;
         mFallbackServiceName = fallbackServiceName;
         mServiceBundle = serviceBundle != null ? serviceBundle : new Bundle();
