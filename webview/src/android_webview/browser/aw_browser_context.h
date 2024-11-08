@@ -18,6 +18,8 @@
 #include "android_webview/browser/aw_ssl_host_state_delegate.h"
 #include "android_webview/browser/file_system_access/aw_file_system_access_permission_context.h"
 #include "android_webview/browser/network_service/aw_proxy_config_monitor.h"
+#include "base/android/jni_android.h"
+#include "base/android/jni_string.h"
 #include "base/android/jni_weak_ref.h"
 #include "base/compiler_specific.h"
 #include "base/files/file_path.h"
@@ -29,6 +31,8 @@
 #include "components/visitedlink/browser/visitedlink_delegate.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/zoom_level_delegate.h"
+#include "extensions/shell/browser/shell_extension_system.h"
+#include "extensions/shell/browser/shell_extension_system_factory.h"
 #include "services/cert_verifier/public/mojom/cert_verifier_service_factory.mojom-forward.h"
 #include "services/network/public/mojom/url_loader.mojom.h"
 #include "third_party/blink/public/mojom/permissions/permission_status.mojom-shared.h"
@@ -167,6 +171,9 @@ class AwBrowserContext : public content::BrowserContext,
 
   base::android::ScopedJavaLocalRef<jobject> GetJavaBrowserContext();
 
+  void InitExtensionSystem();
+  jboolean LoadExtension(JNIEnv* env, const base::android::JavaParamRef<jstring>& j_extension_path);
+
   void ClearPersistentOriginTrialStorageForTesting(JNIEnv* env);
 
   jboolean HasFormData(JNIEnv* env);
@@ -209,6 +216,7 @@ class AwBrowserContext : public content::BrowserContext,
   std::unique_ptr<content::OriginTrialsControllerDelegate>
       origin_trials_controller_delegate_;
 
+  raw_ptr<extensions::ShellExtensionSystem> extension_system_;
   AwFileSystemAccessPermissionContext fsa_permission_context_;
   SimpleFactoryKey simple_factory_key_;
 
